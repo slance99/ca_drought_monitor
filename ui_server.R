@@ -9,6 +9,23 @@ library(ggplot2)
 library(janitor)
 library(readr)
 
+# Loading in drought shapefile data
+data_dir <- here("data", "drought_index")
+
+shp_files <- list.files(data_dir, pattern = "\\.shp$", recursive = TRUE, full.names = TRUE)
+
+california_shp <- here("data", "ca_state")
+
+ca_boundary <- st_read(california_shp) %>% 
+  st_transform(4326)
+
+shp_data <- data.frame(
+  file_path = shp_files,
+  year = as.numeric(substr(gsub(".*USDM_(\\d{8})\\.shp", "\\1", basename(shp_files)), 1, 4))
+) %>% 
+  arrange(year) %>% 
+  distinct(year, .keep_all = TRUE)
+
 # Define UI define
 UI <- fluidPage(
   # Application title
@@ -50,12 +67,9 @@ UI <- fluidPage(
                          value = min(shp_data$year), 
                          step = 1, 
                          animate = TRUE, 
-                         sep = "")
+                         sep = ""),
+             leafletOutput("map", height = 600)  # Ensure it's inside the tabPanel
     ),
-    mainPanel(
-      leafletOutput("map", height = 600)
-    )
-  ),
     
     ############ PCA - RB ############
     tabPanel("Principal Component Analysis", 
@@ -115,27 +129,11 @@ UI <- fluidPage(
              plotOutput("ej_plot")
     )
   )
+)
 
 
 # Define server logic
 SERVER <- function(input, output, session) {
-  
-  # Loading in drought shapefile data
-  data_dir <- here("data", "drought_index")
-  
-  shp_files <- list.files(data_dir, pattern = "\\.shp$", recursive = TRUE, full.names = TRUE)
-  
-  california_shp <- here("data", "ca_state")
-  
-  ca_boundary <- st_read(california_shp) %>% 
-    st_transform(4326)
-  
-  shp_data <- data.frame(
-    file_path = shp_files,
-    year = as.numeric(substr(gsub(".*USDM_(\\d{8})\\.shp", "\\1", basename(shp_files)), 1, 4))
-  ) %>% 
-    arrange(year) %>% 
-    distinct(year, .keep_all = TRUE)
   
   # More drought server parameters
   selected_shp <- reactive({
@@ -167,23 +165,21 @@ SERVER <- function(input, output, session) {
   observe({
     req(selected_shp())
     
-    # Define updated color palette for DM values (no color for 5)
+    # Define updated color palette for DM values
     pal <- colorFactor(
       palette = c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001"), 
-      domain = c(0, 1, 2, 3, 4)  # Exclude 5 from domain
+      domain = c(0, 1, 2, 3, 4)
     )
     
     leafletProxy("map") %>%
       clearShapes() %>%
       addPolygons(data = selected_shp(), 
                   fillColor = ~pal(DM),  # Assign color based on DM values
-                  color = NA,       # Outline color
+                  color = NA,
                   weight = 0, 
                   fillOpacity = 1,
                   popup = ~paste("Drought Index:", DM))  # Add popup info
   })
-}
-  
   
   # Load the data reactively
   climate_data <- reactive({
