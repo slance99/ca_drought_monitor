@@ -259,7 +259,8 @@ output$ej_box_plot <- renderPlot({
     labs(x = "County", 
          y = "Value", 
          title = paste(input$ej_variable)) +
-  scale_fill_brewer(palette = "Pastel1") 
+    scale_fill_brewer(palette = "Pastel1") +
+    theme(legend.position = "none")
 })
 
 # Render the table
