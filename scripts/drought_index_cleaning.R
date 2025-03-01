@@ -16,3 +16,4 @@ county_drought <- drought_index %>%
     severe_drought_prop = mean(usdm_numeric >= 3, na.rm = TRUE),
     sd_usdm = sd(usdm_numeric, na.rm = TRUE)
   )
+
