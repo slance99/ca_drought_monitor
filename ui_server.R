@@ -233,14 +233,14 @@ meta_data <- reactive({
   read_csv(here("data","meta_data.csv"))
 })
 
-# Dynamically update the EJ factor choices from the 'climate factor' column
+# Dynamically update the EJ factor choices from the 'ej_variable' column
 observe({
   data <- ces4_longer()
   factors <- unique(data$`ej_variable`)
   updateSelectInput(session, "ej_variable", choices = factors)
 })
 
-# Filter data based on selected county and climate factor
+# Filter data based ej variable
 filtered_ej_data <- reactive({
   req(input$ej_variable)
   data <- ces4_longer() %>%
@@ -248,7 +248,7 @@ filtered_ej_data <- reactive({
   data
 })
 
-# Create the plot with year on the x-axis and the value on the y-axis
+# Create the plot
 output$ej_box_plot <- renderPlot({
   req(input$ej_variable)
   data <- filtered_ej_data()
