@@ -116,17 +116,14 @@ UI <- fluidPage(
     
     ############ EJ - RB + TB ############
     tabPanel("Environmental Justice",
-             h3("Health and Human Impacts Resulting from Drought"),
+             h3("Health and Human Impacts Related to Drought"),
              p("Water security, quality, wildfires, air quality, and other issues all can be caused or exastebated by drought.
-               Marginalized groups and those with the least resources offten bear the brunt of impacts from drought."),
+               Marginalized groups and those with the least resources often bear the brunt of impacts from drought."),
              
-             selectInput("county_ej",
-                         label = "Select County",
-                         choices = c("Los Angeles", "El Dorado")),
-             selectInput("envjustice",
-                         label = "Select Impact",
-                         choices = c("Water Supply", "Water Quality", "Air Quality (PM)", "Fire Risk", "Poverty")),
-             plotOutput("ej_plot")
+             selectInput("ej_variable",
+                         label = "Select EJ Factor",
+                         choices = NULL),
+             plotOutput("ej_box_plot")
     )
   )
 )
@@ -221,6 +218,53 @@ SERVER <- function(input, output, session) {
            title = paste(input$climate_factor, "Trend in", input$county_cl)) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
   })
+
+########
+
+# EJ tab
+
+# Load the data reactively
+ces4_longer <- reactive({
+  read_csv(here("data","ces4_longer.csv"))
+})
+
+ces4_data <- reactive({
+  read_csv(here("data","CES4_clean.csv"))
+})
+
+# Dynamically update the EJ factor choices from the 'climate factor' column
+observe({
+  data <- ces4_longer()
+  factors <- unique(data$`ej_variable`)
+  updateSelectInput(session, "ej_variable", choices = factors)
+})
+
+# Filter data based on selected county and climate factor
+filtered_ej_data <- reactive({
+  req(input$ej_variable)
+  data <- ces4_longer() %>%
+    filter(`ej_variable` == input$ej_variable)
+  data
+})
+
+# Create the plot with year on the x-axis and the value on the y-axis
+output$ej_box_plot <- renderPlot({
+  req(input$ej_variable)
+  data <- filtered_ej_data()
+  
+  ggplot(data, aes(x = county, y = value, fill = county)) + 
+    geom_boxplot() +
+    theme_minimal() +
+    labs(x = "County", 
+         y = "Value", 
+         title = paste(input$ej_variable)) +
+  scale_fill_brewer(palette = "Pastel1") 
+})
 }
+
+shinyApp(ui = UI, server = SERVER)
+
+
+
 
 shinyApp(ui = UI, server = SERVER)
