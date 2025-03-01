@@ -123,7 +123,8 @@ UI <- fluidPage(
              selectInput("ej_variable",
                          label = "Select EJ Factor",
                          choices = NULL),
-             plotOutput("ej_box_plot")
+             plotOutput("ej_box_plot"),
+             tableOutput("meta_data")
     )
   )
 )
@@ -228,8 +229,8 @@ ces4_longer <- reactive({
   read_csv(here("data","ces4_longer.csv"))
 })
 
-ces4_data <- reactive({
-  read_csv(here("data","CES4_clean.csv"))
+meta_data <- reactive({
+  read_csv(here("data","meta_data.csv"))
 })
 
 # Dynamically update the EJ factor choices from the 'climate factor' column
@@ -260,6 +261,12 @@ output$ej_box_plot <- renderPlot({
          title = paste(input$ej_variable)) +
   scale_fill_brewer(palette = "Pastel1") 
 })
+
+# Render the table
+output$meta_data <- renderTable({
+  meta_data()
+})
+
 }
 
 shinyApp(ui = UI, server = SERVER)
