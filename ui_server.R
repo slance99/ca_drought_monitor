@@ -9,6 +9,23 @@ library(ggplot2)
 library(janitor)
 library(readr)
 
+# Loading in drought shapefile data
+data_dir <- here("data", "drought_index")
+
+shp_files <- list.files(data_dir, pattern = "\\.shp$", recursive = TRUE, full.names = TRUE)
+
+california_shp <- here("data", "ca_state")
+
+ca_boundary <- st_read(california_shp) %>% 
+  st_transform(4326)
+
+shp_data <- data.frame(
+  file_path = shp_files,
+  year = as.numeric(substr(gsub(".*USDM_(\\d{8})\\.shp", "\\1", basename(shp_files)), 1, 4))
+) %>% 
+  arrange(year) %>% 
+  distinct(year, .keep_all = TRUE)
+
 # Define UI define
 UI <- fluidPage(
   # Application title
@@ -42,14 +59,17 @@ UI <- fluidPage(
     
     ############ DROUGHT MAP - TB ############
     tabPanel("Drought Map", 
-             h3("Drought Over Time"),
+             h3("How has the distribution of drought severity changed over time?"),
              p("[Use the slider to visualize drought conditions by date.]"),
-             sliderInput("date", "Select Date:",
-                         min = as.Date("2000-01-01"), 
-                         max = as.Date("2025-01-01"), 
-                         value = as.Date("2010-06-01"),
-                         timeFormat = "%Y-%m-%d"),
-             leafletOutput("drought_map", height = "600px")),
+             sliderInput("year", "Select Year:",
+                         min = min(shp_data$year), 
+                         max = max(shp_data$year),
+                         value = min(shp_data$year), 
+                         step = 1, 
+                         animate = TRUE, 
+                         sep = ""),
+             leafletOutput("map", height = 600)  # Ensure it's inside the tabPanel
+    ),
     
     ############ PCA - RB ############
     tabPanel("Principal Component Analysis", 
@@ -111,8 +131,55 @@ UI <- fluidPage(
   )
 )
 
+
 # Define server logic
 SERVER <- function(input, output, session) {
+  
+  # More drought server parameters
+  selected_shp <- reactive({
+    req(input$year)
+    
+    file_to_load <- shp_data %>%
+      filter(year == input$year) %>%
+      pull(file_path)
+    
+    if (length(file_to_load) > 0) {
+      drought_data <- st_read(file_to_load[1]) %>% 
+        st_transform(4326) %>% 
+        st_make_valid()  # Fix invalid geometries
+      
+      drought_ca <- st_intersection(drought_data, ca_boundary)  # Clip to California
+      
+      return(drought_ca)
+    } else {
+      return(NULL)
+    }
+  })
+  
+  output$map <- renderLeaflet({
+    leaflet() %>%
+      addTiles() %>%
+      setView(lng = -119.5, lat = 37, zoom = 6)  # Centered on California
+  })
+  
+  observe({
+    req(selected_shp())
+    
+    # Define updated color palette for DM values
+    pal <- colorFactor(
+      palette = c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001"), 
+      domain = c(0, 1, 2, 3, 4)
+    )
+    
+    leafletProxy("map") %>%
+      clearShapes() %>%
+      addPolygons(data = selected_shp(), 
+                  fillColor = ~pal(DM),  # Assign color based on DM values
+                  color = NA,
+                  weight = 0, 
+                  fillOpacity = 1,
+                  popup = ~paste("Drought Index:", DM))  # Add popup info
+  })
   
   # Load the data reactively
   climate_data <- reactive({
