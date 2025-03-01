@@ -23,7 +23,13 @@ ces4 <- ces4 |>
       TRUE ~ "Other County"
     )
   ) |>
-  select(-ends_with("_pctl"))
+  select(-ends_with(c("_pctl", "percentile")),
+         -census_tract,
+         -low_birth_weight,
+         -latitude,
+         -longitude,
+         -zip
+  )
 
 
 
