@@ -8,6 +8,7 @@ library(here)
 library(ggplot2)
 library(janitor)
 library(readr)
+library(DT)
 
 # Loading in drought shapefile data
 data_dir <- here("data", "drought_index")
@@ -25,6 +26,7 @@ shp_data <- data.frame(
 ) %>% 
   arrange(year) %>% 
   distinct(year, .keep_all = TRUE)
+
 
 # Define UI define
 UI <- fluidPage(
@@ -60,15 +62,29 @@ UI <- fluidPage(
     ############ DROUGHT MAP - TB ############
     tabPanel("Drought Map", 
              h3("How has the distribution of drought severity changed over time?"),
-             p("[Use the slider to visualize drought conditions by date.]"),
-             sliderInput("year", "Select Year:",
-                         min = min(shp_data$year), 
-                         max = max(shp_data$year),
-                         value = min(shp_data$year), 
-                         step = 1, 
-                         animate = TRUE, 
-                         sep = ""),
-             leafletOutput("map", height = 600)  # Ensure it's inside the tabPanel
+             fluidRow(
+               column(6,
+                      p("The U.S. Drought Monitor (USDM) has been mapping drought conditions across the United States since 2000, providing a real-time snapshot of drought severity.
+                      Spatial drought monitoring is critical for decision-making in areas like water management, agriculture, and emergency response.
+                      The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
+                      The data in this map represents annual drought conditions during the peak drought season in late August. 
+                      Use the time slider below to explore how drought conditions have evolved over time."),
+                      sliderInput("year", "Select Year:",
+                                  min = min(shp_data$year), 
+                                  max = max(shp_data$year),
+                                  value = min(shp_data$year), 
+                                  step = 1, 
+                                  animate = TRUE, 
+                                  sep = "",
+                                  width = "100%"),
+                      h4("Drought Index Categories"),
+                      DTOutput("drought_table")
+               ),
+               
+               column(6, 
+                      leafletOutput("map", height = "100vh")
+               )
+             )
     ),
     
     ############ PCA - RB ############
@@ -156,8 +172,8 @@ SERVER <- function(input, output, session) {
   
   output$map <- renderLeaflet({
     leaflet() %>%
-      addTiles() %>%
-      setView(lng = -119.5, lat = 37, zoom = 6)  # Centered on California
+      addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  # Change to CartoDB Positron basemap
+      setView(lng = -119.5, lat = 37.5, zoom = 6)  # Centered on California
   })
   
   observe({
@@ -177,6 +193,42 @@ SERVER <- function(input, output, session) {
                   weight = 0, 
                   fillOpacity = 1,
                   popup = ~paste("Drought Index:", DM))  # Add popup info
+  })
+  
+  drought_index_data <- data.frame(
+    Category = c("D0", "D1", "D2", 
+                 "D3", "D4"),
+    Description = c("Abnormally Dry", 
+                    "Moderate Drought", 
+                    "Severe Drought", 
+                    "Extreme Drought", 
+                    "Exceptional Drought"),
+    Impacts = c("Going into drought: short-term dryness slows growth of crops/pastures. Coming out of drought: 
+                       some lingering water deficits; crops/pastures not fully recovered.", 
+                "Some damage to crops/pastures; streams, reservoirs, or wells are low with some water shortages developing or imminent; voluntary water-use restrictions requested",
+                "Crop and pasture losses likely; water shortages are common and water restrictions are imposed",
+                "Major crop/pasture losses; widespread water shortages or restrictions",
+                "Exceptional and widespread crop/pasture losses; shortages of waster in reservoirs, streams, and wells creating water emergencies")
+  )
+  
+  category_colors <- c("D0" = "#FFFF00", "D1" = "#FBD47F", "D2" = "#FFAA01", "D3" = "#E60001", "D4" = "#710001")
+  
+  output$drought_table <- renderDT({
+    datatable(drought_index_data, 
+              options = list(
+                dom = 't',
+                paging = FALSE,  
+                searching = FALSE  
+              ),
+              escape = FALSE) %>%
+      formatStyle(
+        "Category",
+        fontWeight = 'bold',
+        backgroundColor = styleEqual(names(category_colors), category_colors),
+        color = styleEqual(
+          c('D0', 'D1', 'D2', 'D3', 'D4'), 
+          c('black', 'black', 'black', 'black', '#F5F5F5'))
+      )
   })
   
   # Load the data reactively
