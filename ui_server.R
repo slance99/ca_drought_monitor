@@ -31,7 +31,7 @@ shp_data <- data.frame(
 # Define UI define
 UI <- fluidPage(
   # Application title
-  titlePanel("Understanding Drought Risk for Two California Counties"),
+  titlePanel("California Drought Explorer"),
   
   ########### DROUGHT INTRO - SL ###########
   tabsetPanel(
@@ -61,10 +61,10 @@ UI <- fluidPage(
     
     ############ DROUGHT MAP - TB ############
     tabPanel("Drought Map", 
-             h3("How has the distribution of drought severity changed over time?"),
+             h3("How has the distribution of drought conditions changed over time?"),
              fluidRow(
                column(6,
-                      p(HTML("The U.S. Drought Monitor (USDM) has been mapping drought conditions across the United States since 2000, providing a real-time snapshot of drought severity.
+                      p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing a real-time snapshot of drought severity.
                            Spatial drought monitoring is critical for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
