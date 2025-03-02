@@ -64,11 +64,11 @@ UI <- fluidPage(
              h3("How has the distribution of drought severity changed over time?"),
              fluidRow(
                column(6,
-                      p("The U.S. Drought Monitor (USDM) has been mapping drought conditions across the United States since 2000, providing a real-time snapshot of drought severity.
-                      Spatial drought monitoring is critical for decision-making in areas like water management, agriculture, and emergency response.
-                      The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
-                      The data in this map represents annual drought conditions during the peak drought season in late August. 
-                      Use the time slider below to explore how drought conditions have evolved over time."),
+                      p(HTML("The U.S. Drought Monitor (USDM) has been mapping drought conditions across the United States since 2000, providing a real-time snapshot of drought severity.
+                           Spatial drought monitoring is critical for decision-making in areas like water management, agriculture, and emergency response.
+                           The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
+                           The data in this map represents annual drought conditions during the peak drought season in late August. 
+                           <b>Use the time slider below to explore how drought conditions have evolved over time.</b>")),
                       sliderInput("year", "Select Year:",
                                   min = min(shp_data$year), 
                                   max = max(shp_data$year),
@@ -80,7 +80,6 @@ UI <- fluidPage(
                       h4("Drought Index Categories"),
                       DTOutput("drought_table")
                ),
-               
                column(6, 
                       leafletOutput("map", height = "100vh")
                )
@@ -173,7 +172,7 @@ SERVER <- function(input, output, session) {
   output$map <- renderLeaflet({
     leaflet() %>%
       addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  # Change to CartoDB Positron basemap
-      setView(lng = -119.5, lat = 37.5, zoom = 6)  # Centered on California
+      setView(lng = -119.5, lat = 37, zoom = 6)  # Centered on California
   })
   
   observe({
