@@ -43,15 +43,14 @@ UI <- fluidPage(
              tags$br(), # Add a line break
              
              
-             p("Due to its dry Mediterranean climate, California is particularly vulnerable to drought. 
-               Droughts are a natural part of the climate system, but they can have serious impacts on water supply, agriculture, and ecosystems. 
-               In recent years, California has experienced several severe droughts, including a five-year drought from 2012 to 2016. 
-               Understanding the factors that contribute to drought risk is essential for effective water management and climate adaptation."),
+             p("With its dry Mediterranean climate, California is particularly vulnerable to drought, which has become more frequent and severe due to the effects of climate change. 
+               While droughts are a natural part of the climate system, their intensity and duration are exacerbated by rising temperatures and shifting precipitation patterns, leading to serious impacts on water supply, agriculture, and ecosystems. 
+               Recent droughts, such as the five-year drought from 2012 to 2016, have highlighted the urgent need for effective drought management and climate adaptation strategies."),
              
              tags$br(), # Add a line break
              
-             p("This Shiny app provides an interactive exploration of drought risk for two California counties: Los Angeles and El Dorado. 
-               The app includes visualizations of climate trends, a principal component analysis of climate variables, and an environmental justice analysis. 
+             p("This Shiny app offers an interactive exploration of drought parameters across California, with a particular focus on the environmental justice implications in Los Angeles and El Dorado County. 
+               Through visualizations of climate trends, a principal component analysis of climate variables, and an environmental justice analysis, the app demonstrates the vital role of monitoring drought conditions in managing risk and supporting vulnerable communities. 
                Use the tabs above to navigate through the different sections of the app."),
              
              tags$br(), # Add a line break
