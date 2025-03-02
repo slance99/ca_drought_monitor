@@ -8,6 +8,7 @@ library(here)
 library(ggplot2)
 library(janitor)
 library(readr)
+library(DT)
 
 # Loading in drought shapefile data
 data_dir <- here("data", "drought_index")
@@ -26,30 +27,30 @@ shp_data <- data.frame(
   arrange(year) %>% 
   distinct(year, .keep_all = TRUE)
 
+
 # Define UI define
 UI <- fluidPage(
   # Application title
-  titlePanel("Understanding Drought Risk for Two California Counties"),
+  titlePanel("California Drought Explorer"),
   
   ########### DROUGHT INTRO - SL ###########
   tabsetPanel(
     tabPanel("Background", 
              h3("Understanding Drought Risk in California"),
-             tags$img(src = "la_photo.jpg", alt = "Sample Image", width = 1100, height = 400),
-             p("Photo by DAVID ILIFF. License: CC BY-SA 3.0"),
+             tags$img(src = "lake_oroville_drought.jpg", alt = "Sample Image", style = "width: 100%; height: 400;"),
+             p("AP Photo/Noah Berger"),
              
              tags$br(), # Add a line break
              
              
-             p("Due to its dry Mediterranean climate, California is particularly vulnerable to drought. 
-               Droughts are a natural part of the climate system, but they can have serious impacts on water supply, agriculture, and ecosystems. 
-               In recent years, California has experienced several severe droughts, including a five-year drought from 2012 to 2016. 
-               Understanding the factors that contribute to drought risk is essential for effective water management and climate adaptation."),
+             p("With its dry Mediterranean climate, California is particularly vulnerable to drought, which has become more frequent and severe due to the effects of climate change. 
+               While droughts are a natural part of the climate system, their intensity and duration are exacerbated by rising temperatures and shifting precipitation patterns, leading to serious impacts on water supply, agriculture, and ecosystems. 
+               Recent droughts, such as the five-year drought from 2012 to 2016, have highlighted the urgent need for effective drought management and climate adaptation strategies."),
              
              tags$br(), # Add a line break
              
-             p("This Shiny app provides an interactive exploration of drought risk for two California counties: Los Angeles and El Dorado. 
-               The app includes visualizations of climate trends, a principal component analysis of climate variables, and an environmental justice analysis. 
+             p("This Shiny app offers an interactive exploration of drought parameters across California, with a particular focus on the environmental justice implications in Los Angeles and El Dorado County. 
+               Through visualizations of climate trends, a principal component analysis of climate variables, and an environmental justice analysis, the app demonstrates the vital role of monitoring drought conditions in managing risk and supporting vulnerable communities. 
                Use the tabs above to navigate through the different sections of the app."),
              
              tags$br(), # Add a line break
@@ -59,16 +60,29 @@ UI <- fluidPage(
     
     ############ DROUGHT MAP - TB ############
     tabPanel("Drought Map", 
-             h3("How has the distribution of drought severity changed over time?"),
-             p("[Use the slider to visualize drought conditions by date.]"),
-             sliderInput("year", "Select Year:",
-                         min = min(shp_data$year), 
-                         max = max(shp_data$year),
-                         value = min(shp_data$year), 
-                         step = 1, 
-                         animate = TRUE, 
-                         sep = ""),
-             leafletOutput("map", height = 600)  # Ensure it's inside the tabPanel
+             h3("How has the distribution of drought conditions changed over time?"),
+             fluidRow(
+               column(6,
+                      p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
+                           Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
+                           The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
+                           The data in this map represents annual drought conditions during the peak drought season in late August. 
+                           <b>Use the time slider below to explore how drought conditions have evolved over time.</b>")),
+                      sliderInput("year", "Select Year:",
+                                  min = min(shp_data$year), 
+                                  max = max(shp_data$year),
+                                  value = min(shp_data$year), 
+                                  step = 1, 
+                                  animate = TRUE, 
+                                  sep = "",
+                                  width = "100%"),
+                      h4("Drought Index Categories"),
+                      DTOutput("drought_table")
+               ),
+               column(6, 
+                      leafletOutput("map", height = "100vh")
+               )
+             )
     ),
     
     ############ PCA - RB ############
@@ -99,7 +113,7 @@ UI <- fluidPage(
     
     ############ CLIMATE FACTORS - SL ############
     tabPanel("Climate Trends", 
-             h3("Understanding Climate Trends in Two California Counties"),
+             h3("Understanding County-level Climate Trends"),
              p("Understanding drought requires an examination of a region’s overall climate. 
                Yearly precipitation (rain and snow), temperature, and soil moisture all contribute to drought risk. 
                To explore these trends for Los Angeles and El Dorado counties, select a county and a climate variable from the dropdown menus below."),
@@ -156,7 +170,7 @@ SERVER <- function(input, output, session) {
   
   output$map <- renderLeaflet({
     leaflet() %>%
-      addTiles() %>%
+      addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  # Change to CartoDB Positron basemap
       setView(lng = -119.5, lat = 37, zoom = 6)  # Centered on California
   })
   
@@ -177,6 +191,42 @@ SERVER <- function(input, output, session) {
                   weight = 0, 
                   fillOpacity = 1,
                   popup = ~paste("Drought Index:", DM))  # Add popup info
+  })
+  
+  drought_index_data <- data.frame(
+    Category = c("D0", "D1", "D2", 
+                 "D3", "D4"),
+    Description = c("Abnormally Dry", 
+                    "Moderate Drought", 
+                    "Severe Drought", 
+                    "Extreme Drought", 
+                    "Exceptional Drought"),
+    Impacts = c("Going into drought: short-term dryness slows growth of crops/pastures. Coming out of drought: 
+                       some lingering water deficits; crops/pastures not fully recovered.", 
+                "Some damage to crops/pastures; streams, reservoirs, or wells are low with some water shortages developing or imminent; voluntary water-use restrictions requested",
+                "Crop and pasture losses likely; water shortages are common and water restrictions are imposed",
+                "Major crop/pasture losses; widespread water shortages or restrictions",
+                "Exceptional and widespread crop/pasture losses; shortages of waster in reservoirs, streams, and wells creating water emergencies")
+  )
+  
+  category_colors <- c("D0" = "#FFFF00", "D1" = "#FBD47F", "D2" = "#FFAA01", "D3" = "#E60001", "D4" = "#710001")
+  
+  output$drought_table <- renderDT({
+    datatable(drought_index_data, 
+              options = list(
+                dom = 't',
+                paging = FALSE,  
+                searching = FALSE  
+              ),
+              escape = FALSE) %>%
+      formatStyle(
+        "Category",
+        fontWeight = 'bold',
+        backgroundColor = styleEqual(names(category_colors), category_colors),
+        color = styleEqual(
+          c('D0', 'D1', 'D2', 'D3', 'D4'), 
+          c('black', 'black', 'black', 'black', '#F5F5F5'))
+      )
   })
   
   # Load the data reactively
