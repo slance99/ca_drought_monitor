@@ -65,7 +65,7 @@ UI <- fluidPage(
              fluidRow(
                column(6,
                       p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
-                           Spatial drought monitoring is critical for decision-making in areas like water management, agriculture, and emergency response.
+                           Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
                            <b>Use the time slider below to explore how drought conditions have evolved over time.</b>")),
