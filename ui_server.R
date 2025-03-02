@@ -9,6 +9,8 @@ library(ggplot2)
 library(janitor)
 library(readr)
 library(DT)
+library(viridis)
+library(shinythemes)
 
 # Loading in drought shapefile data
 data_dir <- here("data", "drought_index")
@@ -29,7 +31,7 @@ shp_data <- data.frame(
 
 
 # Define UI define
-UI <- fluidPage(
+UI <- fluidPage(theme = shinytheme("united"),
   # Application title
   titlePanel("California Drought Explorer"),
   
@@ -113,20 +115,24 @@ UI <- fluidPage(
     
     ############ CLIMATE FACTORS - SL ############
     tabPanel("Climate Trends", 
-             h3("Understanding County-level Climate Trends"),
-             p("Understanding drought requires an examination of a region’s overall climate. 
-               Yearly precipitation (rain and snow), temperature, and soil moisture all contribute to drought risk. 
-               To explore these trends for Los Angeles and El Dorado counties, select a county and a climate variable from the dropdown menus below."),
-             
-             selectInput("county_cl",
-                         label = "Select County",
-                         choices = NULL),
-             selectInput("climate_factor",
-                         label = "Select Climate Variable",
-                         choices = NULL),
-             plotOutput("climate_plot")
-    ),
-    
+             h3("Understanding Climate Trends for California Counties"),
+             fluidRow(
+               column(4,
+               p(HTML("Climate factors such precipitation, temperature, and vapor pressure deficit play a major role in 
+               determining drought conditions. Increased temperature and decreased precipitation can lead to more severe and prolonged droughts.
+               Due to climate change, these factors have and will continue to experience significant change over time, impacting drought risk.
+               <b> To see how these factors have changed for individual counties in California, select a county and climate factor of interest .</b>")),
+               wellPanel(selectInput("county_cl",
+                           label = "Select County",
+                           choices = NULL),
+                         selectInput("climate_factor",
+                           label = "Select Climate Variable",
+                           choices = NULL)
+                         )
+               ),
+               column(8,
+                      plotOutput("climate_plot", height = "350px", width = "100%")
+                      ))),
     
     ############ EJ - RB + TB ############
     tabPanel("Environmental Justice",
@@ -259,15 +265,24 @@ SERVER <- function(input, output, session) {
   # Create the plot with year on the x-axis and the value on the y-axis
   output$climate_plot <- renderPlot({
     req(input$climate_factor)
-    data <- filtered_data()
+    data <- filtered_data() 
     
     ggplot(data, aes(x = date, y = value)) + 
-      geom_line(size = 1) +
-      theme_minimal() +
+      geom_line(size = 1.2) +  # Slightly thicker line for better visibility
+      scale_fill_viridis(option = "plasma") +  # Using fill for color scaling
+      theme_classic() +
       labs(x = "Year", 
            y = "Value", 
            title = paste(input$climate_factor, "Trend in", input$county_cl)) +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+      theme(
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 14),  # Larger x-axis labels
+        axis.text.y = element_text(size = 14),  # Larger y-axis labels
+        axis.title.x = element_text(size = 16),  # Larger x-axis title
+        axis.title.y = element_text(size = 16),  # Larger y-axis title
+        plot.title = element_text(size = 18, hjust = 0.5),  # Larger title
+        legend.title = element_text(size = 14),  # Larger legend title
+        legend.text = element_text(size = 12)  # Larger legend text
+      )
   })
 
 ########
