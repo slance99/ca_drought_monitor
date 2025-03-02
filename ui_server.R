@@ -37,8 +37,8 @@ UI <- fluidPage(
   tabsetPanel(
     tabPanel("Background", 
              h3("Understanding Drought Risk in California"),
-             tags$img(src = "la_photo.jpg", alt = "Sample Image", width = 1100, height = 400),
-             p("Photo by DAVID ILIFF. License: CC BY-SA 3.0"),
+             tags$img(src = "lake_oroville_drought.jpg", alt = "Sample Image", style = "width: 100%; height: 400;"),
+             p("AP Photo/Noah Berger"),
              
              tags$br(), # Add a line break
              
