@@ -114,7 +114,7 @@ UI <- fluidPage(
     
     ############ CLIMATE FACTORS - SL ############
     tabPanel("Climate Trends", 
-             h3("Understanding Climate Trends in Two California Counties"),
+             h3("Understanding County-level Climate Trends"),
              p("Understanding drought requires an examination of a region’s overall climate. 
                Yearly precipitation (rain and snow), temperature, and soil moisture all contribute to drought risk. 
                To explore these trends for Los Angeles and El Dorado counties, select a county and a climate variable from the dropdown menus below."),
