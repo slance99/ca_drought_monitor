@@ -76,6 +76,7 @@ UI <- fluidPage(
   
   ########### DROUGHT INTRO - SL ###########
   tabsetPanel(
+    id = "tabs",
     tabPanel("Background", 
              h3("Understanding Drought Risk in California"),
              tags$img(src = "lake_oroville_drought.jpg", alt = "Sample Image", style = "width: 100%; height: 400;"),
@@ -109,12 +110,14 @@ UI <- fluidPage(
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
                            <b>Use the time slider below to explore how drought conditions have evolved over time.</b>")),
-                      sliderTextInput("year", "Select Year:",
-                                      choices = shp_data$year,
-                                      selected = min(shp_data$year),
-                                      grid = TRUE,
-                                      width = "100%",
-                                      animate = animationOptions(interval = 1000, loop = TRUE)),
+                      sliderInput("year", "Select Year:",
+                                  min = min(shp_data$year), 
+                                  max = max(shp_data$year), 
+                                  value = min(shp_data$year), 
+                                  step = 1,
+                                  sep = "",
+                                  width = "100%",
+                                  animate = animationOptions(interval = 1500, loop = TRUE)),
                       h4("Drought Index Categories"),
                       DTOutput("drought_table")
                ),
@@ -219,6 +222,17 @@ SERVER <- function(input, output, session) {
     leaflet() %>%
       addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  # Change to CartoDB Positron basemap
       setView(lng = -119.5, lat = 37, zoom = 6)  # Centered on California
+  })
+  
+  observeEvent(input$tabs, {
+    if (input$tabs == "Drought Map") {
+      # Reset the map view
+      leafletProxy("map") %>%
+        setView(lng = -119.5, lat = 37, zoom = 6)  # Reset to California
+      
+      # Reset the time slider
+      updateSliderInput(session, "year", value = min(shp_data$year))  # Reset to the minimum year value
+    }
   })
   
   observe({
