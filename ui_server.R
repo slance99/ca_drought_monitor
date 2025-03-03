@@ -134,23 +134,14 @@ UI <- fluidPage(
                or linear dimensionality reduciton. PCA projects a swarm of mutlidimentional data
                onto a two dimentional plot with Principle Components (PC) on each axis chosen based on 
                the direction of the data with the greatest variance. PCA is useful for multidimentional data exploration
-               and can tell us a lot about correlations between many variables within a dataset."
+               and can tell us a lot about correlations between many variables within a dataset. 
+               
+               This PCA focuses on climate variables and their relatation to drought conditions within California Counties in 2021."
              ),
              
-             sliderInput("date", "Select Date:",
-                         min = as.Date("2000-01-01"), 
-                         max = as.Date("2025-01-01"), 
-                         value = as.Date("2010-06-01"),
-                         timeFormat = "%Y-%m-%d"),
-             leafletOutput("drought_biplot"),
+             plotOutput("biplot"),
+             plotOutput("screeplot", height = "350px", width = "75%")
              
-             #### not sure here if the checkbox will be best option here...
-             checkboxGroupInput("checkbox_menu", 
-                                label = "Select Symbology",
-                                choices = list("County" = "opt1", 
-                                               "Drought Index" = "opt2"), 
-                                selected = NULL),  # Default selection (None selected)
-             plotOutput("pca_biplot")
     ),
     
     ############ CLIMATE FACTORS - SL ############
@@ -388,6 +379,70 @@ output$meta_data <- renderTable({
   meta_data()
 })
 
+
+########
+
+### PCA tab
+
+# Load the data reactively
+drought_data <- reactive({
+  read_csv(here("data","joined_drought_data.csv"))
+})
+
+  joined_drought_pca <- joined_drought_data |>
+    select(where(is.numeric)) |>
+    drop_na() |>
+    select_if(~ var(.x, na.rm = TRUE) != 0)  # Remove zero-variance columns
+  
+  # scale
+  joined_drought_pca <- joined_drought_pca |> 
+    prcomp(scale = TRUE)
+  
+  # Define custom colors in a vector
+  color_values <- c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001")
+  
+  color_palette <- setNames(color_values, c("D0", "D1", "D2", "D3", "D4"))
+  
+  output$biplot <- renderPlot({
+    # Plot the PCA biplot with ggplot2
+    autoplot(joined_drought_pca, 
+                      data = joined_drought_data, 
+                      loadings = TRUE,
+                      color = "USDM_index",
+                      loadings.label = TRUE,
+                      loadings.colour = "black",
+                      loadings.label.colour = "black",
+                      loadings.label.vjust = -0.5) +
+      scale_color_manual(values = color_palette) +
+      theme_minimal() +
+      labs(title = "PCA of Drought and Climate Conditions in CA Counties (2021)",
+             colour = "Drought Index", shape = "County")
+})
+  
+  ### Scree Plots ###
+  
+  # create a dataframe with the necessary indgreidents to make a screeplot
+  
+  pc_names <- colnames(joined_drought_pca$rotation)
+  sd_vec <- joined_drought_pca$sdev
+  var_vec <- sd_vec^2    # sd = variance^2
+  
+  
+  pct_expl_df <- data.frame(v = var_vec,
+                            pct_v = var_vec / sum(var_vec),
+                            pc = pc_names)
+  
+  # Screeplot
+  output$screeplot <- renderPlot({
+    ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
+      geom_col(fill="steelblue") +
+      geom_text(aes(label = scales::percent(round(pct_v,3))), vjust = 0, nudge_y = .5, angle=90) +
+      labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
+      theme_bw()+
+      theme(axis.text = element_text(size=10)) +
+      theme(axis.text.x = element_text(angle=45,hjust=1))
+})
+  
 }
 
 shinyApp(ui = UI, server = SERVER)
