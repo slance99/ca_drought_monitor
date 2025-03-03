@@ -12,6 +12,10 @@ library(DT)
 library(viridis)
 library(shinythemes)
 
+############################################################################
+############################################################################
+############################################################################
+
 # Loading in drought shapefile data
 data_dir <- here("data", "drought_index")
 
@@ -29,9 +33,44 @@ shp_data <- data.frame(
   arrange(year) %>% 
   distinct(year, .keep_all = TRUE)
 
+############################################################################
+############################################################################
+############################################################################
 
 # Define UI define
-UI <- fluidPage(theme = shinytheme("united"),
+UI <- fluidPage(
+  theme = shinytheme("united"),
+  
+  # Custom CSS for styling the slider
+  tags$style(HTML("
+  .irs-bar {
+    background: #E95420 !important;
+    border-top: 1px solid #D43F00 !important;
+    border-bottom: 1px solid #D43F00 !important;
+  }
+
+  .irs-bar-edge {
+    background: #E95420 !important;
+    border: 1px solid #D43F00 !important;
+  }
+
+  .irs-slider {
+    background: #D43F00 !important;
+    border: 1px solid #D43F00 !important;
+  }
+
+  .irs-grid-text {
+    font-size: 12px !important;
+    color: #555 !important;
+  }
+
+  .irs-single {
+    background: #E95420 !important;
+    color: white !important;
+    border: 1px solid #D43F00 !important;
+  }
+")),
+
   # Application title
   titlePanel("California Drought Explorer"),
   
@@ -70,14 +109,12 @@ UI <- fluidPage(theme = shinytheme("united"),
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
                            <b>Use the time slider below to explore how drought conditions have evolved over time.</b>")),
-                      sliderInput("year", "Select Year:",
-                                  min = min(shp_data$year), 
-                                  max = max(shp_data$year),
-                                  value = min(shp_data$year), 
-                                  step = 1, 
-                                  animate = TRUE, 
-                                  sep = "",
-                                  width = "100%"),
+                      sliderTextInput("year", "Select Year:",
+                                      choices = shp_data$year,
+                                      selected = min(shp_data$year),
+                                      grid = TRUE,
+                                      width = "100%",
+                                      animate = animationOptions(interval = 1000, loop = TRUE)),
                       h4("Drought Index Categories"),
                       DTOutput("drought_table")
                ),
@@ -149,6 +186,10 @@ UI <- fluidPage(theme = shinytheme("united"),
   )
 )
 
+
+############################################################################
+############################################################################
+############################################################################
 
 # Define server logic
 SERVER <- function(input, output, session) {
@@ -334,10 +375,5 @@ output$meta_data <- renderTable({
 })
 
 }
-
-shinyApp(ui = UI, server = SERVER)
-
-
-
 
 shinyApp(ui = UI, server = SERVER)
