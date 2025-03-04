@@ -385,7 +385,7 @@ output$meta_data <- renderTable({
 ### PCA tab
 
 # Load the data reactively
-drought_data <- reactive({
+joined_drought_data <- reactive({
   read_csv(here("data","joined_drought_data.csv"))
 })
 
