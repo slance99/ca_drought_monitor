@@ -208,8 +208,13 @@ UI <- fluidPage(
                This PCA focuses on climate variables and their relatation to drought conditions within California Counties in 2021."
              ),
              
-             plotOutput("biplot", height = "350px", width = "75%"),
-             plotOutput("screeplot", height = "350px", width = "75%")
+             # Add checkbox group input for variable selection
+               column(3,
+                 checkboxGroupInput("pca_variables", 
+                                label = "Select (at least) Two Variables for PCA",
+                                choices = NULL)),
+             column(9,
+                    plotOutput("biplot", height = "350px", width = "75%"))
              
     ),
     
@@ -481,44 +486,62 @@ output$meta_data <- renderTable({
 
 # Load the data reactively
 joined_drought_data <- reactive({
-  read_csv(here("data","joined_drought_data.csv"))
+  read_csv(here("data", "joined_drought_data.csv"))
 })
 
-# Prepare PCA data
-joined_drought_pca <- reactive({
-  req(joined_drought_data())  # Ensure data is available
-  data <- joined_drought_data() |> 
-    select(where(is.numeric)) |>
-    drop_na() |>
-    select_if(~ var(.x, na.rm = TRUE) != 0)  # Remove zero-variance columns
+# Dynamically update the checkbox choices from the numeric columns of the data
+observe({
+  data <- joined_drought_data() |>
+    select(-date)
   
-  # Perform PCA
-  prcomp(data, scale = TRUE)
+  # Get only numeric columns
+  numeric_columns <- colnames(data)[sapply(data, is.numeric)]
+  
+  # Update the checkbox choices to include only numeric columns
+  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns)
+})
+
+# Filter the data based on selected variables for PCA
+pca_data <- reactive({
+  req(input$pca_variables)  # Ensure some variables are selected
+  
+  # Filter the data by selected variables
+  data <- joined_drought_data()
+  data_selected <- data[, input$pca_variables, drop = FALSE]
+  
+  # Remove any columns that have zero variance
+  data_selected <- data_selected[, apply(data_selected, 2, var) != 0]
+  
+})
+
+# Perform PCA on the selected variables
+pca_result <- reactive({
+  req(pca_data())  # Ensure the filtered data is ready
+  prcomp(pca_data(), scale = TRUE)
 })
 
 # Define custom colors in a vector
 color_values <- c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001")
 color_palette <- setNames(color_values, c("D0", "D1", "D2", "D3", "D4"))
 
+# Plot the PCA biplot
 output$biplot <- renderPlot({
-  req(joined_drought_pca())  # Ensure PCA is ready
-  pca_result <- joined_drought_pca()  # Get PCA result
+  req(pca_result())
+  pca <- pca_result()
   
-  # Plot the PCA biplot with ggplot2
-  autoplot(pca_result, 
+  autoplot(pca, 
            data = joined_drought_data(), 
-           loadings = TRUE,
+           loadings = TRUE, 
            color = "USDM_index",
            loadings.label = TRUE,
            loadings.colour = "black",
-           loadings.label.colour = "black",
-           loadings.label.vjust = -0.5) +
+           loadings.label.colour = "black",) +
     scale_color_manual(values = color_palette) +
     theme_minimal() +
-    labs(title = "PCA of Drought and Climate Conditions in CA Counties (2021)",
-         colour = "Drought Index", shape = "County")
+    labs(title = "PCA of Selected Drought and Climate Conditions")
 })
 
+<<<<<<< HEAD
 ### Scree Plots ###
 
 # Create a dataframe with the necessary ingredients to make a scree plot
@@ -556,6 +579,13 @@ output$data_source <- renderDT({
                 visible = FALSE         
               ))
             ))
+=======
+### Data sources tab
+
+output$data_source <- renderTable({
+  data_source 
+  
+>>>>>>> 320e102f9c1e2e5e853f689d43957381c3bd4552
 })
   
 }
