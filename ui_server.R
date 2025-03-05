@@ -56,6 +56,10 @@ climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
 #loading drought pca data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
 
+
+#read in data source table
+data_source <- read_csv(here("data","data_citations.csv"))
+
 ############################################################################
 ############################################################################
 ############################################################################
@@ -207,6 +211,13 @@ UI <- fluidPage(
                       plotOutput("ej_box_plot", height = "650px", width = "80%")
                )
              )
+    ),
+    
+    ############ Data Citations - RB + TB ############ 
+    tabPanel("Data & References",
+             h3("Data Sources"),
+             p("The data used in this Shiny app was sourced from the following datasets:"),
+             tableOutput("data_source")
     )
   )
 )
@@ -481,6 +492,10 @@ output$screeplot <- renderPlot({
     theme_bw() +
     theme(axis.text = element_text(size = 10)) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
+})
+
+output$data_source <- renderTable({
+  data_source 
 })
   
 }
