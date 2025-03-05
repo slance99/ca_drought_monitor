@@ -225,7 +225,7 @@ UI <- fluidPage(
                                 label = "Select (at least) Two Variables for PCA",
                                 choices = NULL)),
              column(9,
-                    plotOutput("biplot", height = "350px", width = "75%"))
+                    plotOutput("biplot", height = "500px", width = "90%"))
              
     ),
     
@@ -247,7 +247,7 @@ UI <- fluidPage(
                          )
                ),
                column(8,
-                      plotOutput("climate_plot", height = "350px", width = "100%")
+                      plotOutput("climate_plot", height = "500px", width = "90%")
                       ))),
     
     ############ EJ - RB + TB ############
@@ -266,7 +266,7 @@ UI <- fluidPage(
                ),
                column(6,
                       offset = 1,
-                      plotOutput("ej_box_plot", height = "650px", width = "80%"),
+                      plotOutput("ej_box_plot", height = "500px", width = "90%"),
                       tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
                )
