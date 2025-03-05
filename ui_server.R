@@ -34,8 +34,24 @@ shp_data <- data.frame(
   arrange(year) %>% 
   distinct(year, .keep_all = TRUE)
 
-#loading in climate data 
-climate_data <- read_csv(here("data", "monthly_prism_climate.csv"))
+#loading + cleaning climate data 
+climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
+  mutate(
+    climate_factor = recode(climate_factor, 
+                            ppt_mm = "Precipitation (mm)",
+                            tmax_degrees_c = "Max Temperature (°C)",
+                            tmean_degrees_c = "Mean Temperature (°C)",
+                            tmin_degrees_c = "Minimum Temperature (°C)",
+                            vpdmin_h_pa = "Minimum Vapor Pressure Deficit (hPa)",
+                            vpdmax_h_pa = "Maximum Vapor Pressure Deficit (hPa)")) |>
+  mutate(county = case_when(
+    county == "Santa Barbar" ~ "Santa Barbara",
+    county == "San Francisc" ~ "San Francisco",
+    county == "San Bernardi" ~ "San Bernardino",
+    county == "San Luis Obi" ~ "San Luis Obispo",
+    TRUE ~ county)) |>
+  filter(!(county %in% c("Del Norte", "Modoc", "Mono", "Alpine"))) # these counties dont match up in each dataset
+
 
 #loading drought pca data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
@@ -300,7 +316,6 @@ SERVER <- function(input, output, session) {
   
   ### climate trends tab - sam 
   
-  # Load the data reactively
   observe({
     counties <- unique(climate_data$county)
     updateSelectInput(session, "county_cl", choices = counties)
@@ -325,21 +340,30 @@ SERVER <- function(input, output, session) {
     req(input$climate_factor)
     data <- filtered_data() 
     
-    ggplot(data, aes(x = date, y = value)) + 
+    climate_palette <- c("Precipitation (mm)" = "#03045e", 
+                        "Max Temperature (°C)" = "#c1121f",
+                        "Mean Temperature (°C)" = "#fb8500",
+                        "Minimum Temperature (°C)" = "#ffb703",
+                        "Minimum Vapor Pressure Deficit (hPa)" = "#8ecae6",
+                        "Maximum Vapor Pressure Deficit (hPa)" = "#219ebc")
+    
+    ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
       geom_line(size = 1.2) +  # Slightly thicker line for better visibility
-      scale_fill_viridis(option = "plasma") +  # Using fill for color scaling
+      geom_point(size = 3) +  # Larger points for better visibility)
       theme_classic() +
+      scale_color_manual(values = climate_palette) +  # Apply the custom color palette
       labs(x = "Year", 
-           y = "Value", 
+           y = paste(input$climate_factor), 
            title = paste(input$climate_factor, "Trend in", input$county_cl)) +
       theme(
-        axis.text.x = element_text(angle = 45, hjust = 1, size = 14),  # Larger x-axis labels
+        axis.text.x = element_text(hjust = 1, size = 14),  # Larger x-axis labels
         axis.text.y = element_text(size = 14),  # Larger y-axis labels
         axis.title.x = element_text(size = 16),  # Larger x-axis title
         axis.title.y = element_text(size = 16),  # Larger y-axis title
         plot.title = element_text(size = 18, hjust = 0.5),  # Larger title
         legend.title = element_text(size = 14),  # Larger legend title
-        legend.text = element_text(size = 12)  # Larger legend text
+        legend.position = "none",
+        legend.text = element_text(size = 12) # Larger legend text
       )
   })
 
