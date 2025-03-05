@@ -188,7 +188,9 @@ UI <- fluidPage(
                ),
                column(6,
                       offset = 1,
-                      plotOutput("ej_box_plot", height = "650px", width = "80%")
+                      plotOutput("ej_box_plot", height = "650px", width = "80%"),
+                      tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
+                                      According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
                )
              )
     )
@@ -378,7 +380,7 @@ output$ej_box_plot <- renderPlot({
     geom_boxplot(alpha = 0.8) +
     theme_minimal() +
     labs(x = "County", 
-         y = "Value", 
+         y = paste(input$ej_variable), 
          title = paste(input$ej_variable)) +
     scale_fill_manual(values = c("grey", "#E95420")) +  
     theme(legend.position = "none")
