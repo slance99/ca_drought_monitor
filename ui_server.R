@@ -140,6 +140,17 @@ UI <- fluidPage(
     background-color: #E95420 !important;
     color: white !important;
   }
+  
+  .checkbox-inline {
+      color: #E95420;  /* Orange text for checkboxes (matches United theme) */
+    }
+    .checkbox input[type='checkbox']:checked {
+      background-color: #E95420;  /* Orange background when checked */
+      border-color: #E95420;      /* Orange border when checked */
+    }
+    .checkbox input[type='checkbox'] {
+      border: 2px solid #E95420; /* Orange border for checkboxes */
+    }
 ")),
 
   # Application title
@@ -498,7 +509,7 @@ observe({
   numeric_columns <- colnames(data)[sapply(data, is.numeric)]
   
   # Update the checkbox choices to include only numeric columns
-  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns)
+  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = numeric_columns)
 })
 
 # Filter the data based on selected variables for PCA
@@ -541,21 +552,20 @@ output$biplot <- renderPlot({
     labs(title = "PCA of Selected Drought and Climate Conditions")
 })
 
-<<<<<<< HEAD
 ### Scree Plots ###
 
 # Create a dataframe with the necessary ingredients to make a scree plot
-output$screeplot <- renderPlot({
-  req(joined_drought_pca())  # Ensure PCA is ready
-  pca_result <- joined_drought_pca()  # Get PCA result
-  
-  pc_names <- colnames(pca_result$rotation)
-  sd_vec <- pca_result$sdev
-  var_vec <- sd_vec^2  # sd = variance^2
-  
-  pct_expl_df <- data.frame(v = var_vec,
-                            pct_v = var_vec / sum(var_vec),
-                            pc = pc_names)
+# output$screeplot <- renderPlot({
+#   req(joined_drought_pca())  # Ensure PCA is ready
+#   pca_result <- joined_drought_pca()  # Get PCA result
+#   
+#   pc_names <- colnames(pca_result$rotation)
+#   sd_vec <- pca_result$sdev
+#   var_vec <- sd_vec^2  # sd = variance^2
+#   
+#   pct_expl_df <- data.frame(v = var_vec,
+#                             pct_v = var_vec / sum(var_vec),
+#                             pc = pc_names)
   
 #   # Screeplot
 #   ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
@@ -565,12 +575,12 @@ output$screeplot <- renderPlot({
 #     theme_bw() +
 #     theme(axis.text = element_text(size = 10)) +
 #     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-})
+# })
 
 output$data_source <- renderDT({
   datatable(data_source, 
             escape = FALSE,
-            option = list(
+            options = list(
               dom = 't',
               paging = FALSE,
               searching = FALSE, 
@@ -579,15 +589,9 @@ output$data_source <- renderDT({
                 visible = FALSE         
               ))
             ))
-=======
-### Data sources tab
-
-output$data_source <- renderTable({
-  data_source 
-  
->>>>>>> 320e102f9c1e2e5e853f689d43957381c3bd4552
 })
-  
+
 }
 
 shinyApp(ui = UI, server = SERVER)
+
