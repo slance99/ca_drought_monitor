@@ -33,6 +33,9 @@ shp_data <- data.frame(
   arrange(year) %>% 
   distinct(year, .keep_all = TRUE)
 
+#loading in climate data 
+climate_data <- read_csv(here("data", "monthly_prism_climate.csv"))
+
 ############################################################################
 ############################################################################
 ############################################################################
@@ -281,29 +284,24 @@ SERVER <- function(input, output, session) {
       )
   })
   
-  # Load the data reactively
-  climate_data <- reactive({
-    read_csv(here("data", "monthly_prism_climate.csv"))
-  })
+  ### climate trends tab - sam 
   
-  # Dynamically update the county choices
+  # Load the data reactively
   observe({
-    data <- climate_data()
-    counties <- unique(data$county)
+    counties <- unique(climate_data$county)
     updateSelectInput(session, "county_cl", choices = counties)
   })
   
   # Dynamically update the climate factor choices from the 'climate factor' column
   observe({
-    data <- climate_data()
-    factors <- unique(data$`climate_factor`)
+    factors <- unique(climate_data$`climate_factor`)
     updateSelectInput(session, "climate_factor", choices = factors)
   })
   
   # Filter data based on selected county and climate factor
   filtered_data <- reactive({
     req(input$county_cl, input$climate_factor)  # wait for both inputs
-    data <- climate_data() %>%
+    data <- climate_data %>%
       filter(county == input$county_cl, `climate_factor` == input$climate_factor)
     data
   })
