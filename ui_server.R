@@ -56,6 +56,10 @@ climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
 #loading drought pca data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
 
+
+#read in data source table
+data_source <- read_csv(here("data","data_citations.csv"))
+
 ############################################################################
 ############################################################################
 ############################################################################
@@ -92,6 +96,43 @@ UI <- fluidPage(
     color: white !important;
     border: 1px solid #D43F00 !important;
   }
+  
+   /* Dropdown styles */
+  select {
+    background-color: white !important; /* Set the dropdown background to white */
+    color: #E95420 !important; /* Set text color to orange */
+    border: 1px solid #D43F00 !important; /* Orange border */
+    font-size: 14px !important;
+  }
+
+  select:focus {
+    background-color: white !important; /* Keep the background white when focused */
+    border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
+    color: #E95420 !important; /* Keep the text color as orange */
+  }
+
+  /* Optional: Add styles to dropdown list items */
+  .selectize-dropdown, .selectize-input {
+    background-color: white !important; /* Dropdown list background stays white */
+    color: #E95420 !important; /* Dropdown list text color is orange */
+    border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
+  }
+
+  .selectize-dropdown .item {
+    color: #E95420 !important; /* Dropdown items have orange text */
+  }
+
+  /* Optional: Hover effect for dropdown items */
+  .selectize-input:focus, .selectize-dropdown:focus {
+    border-color: #E95420 !important; /* Highlight the border with orange */
+    background-color: white !important; /* Keep the background white */
+  }
+
+  /* Optional: Change the background color when selecting an item */
+  .selectize-dropdown .active {
+    background-color: #E95420 !important;
+    color: white !important;
+  }
 ")),
 
   # Application title
@@ -119,8 +160,6 @@ UI <- fluidPage(
                Use the tabs above to navigate through the different sections of the app."),
              
              tags$br(), # Add a line break
-             
-             p("The [ INSERT DATA TYPE ] data was sourced from [ INSERT DATA SOURCE ] - repeat for all data as is input into the project")
     ),
     
     ############ DROUGHT MAP - TB ############
@@ -214,6 +253,13 @@ UI <- fluidPage(
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
                )
              )
+    ),
+    
+    ############ Data Citations - RB + TB ############ 
+    tabPanel("Data & References",
+             h3("Data Sources"),
+             p("The data used in this Shiny app was sourced from the following datasets:"),
+             tableOutput("data_source")
     )
   )
 )
@@ -318,6 +364,8 @@ SERVER <- function(input, output, session) {
           c('black', 'black', 'black', 'black', '#F5F5F5'))
       )
   })
+  
+  ############
   
   ### climate trends tab - sam 
   
@@ -485,7 +533,36 @@ output$biplot <- renderPlot({
 })
 
 
+<<<<<<< HEAD
 
+=======
+# Create a dataframe with the necessary ingredients to make a scree plot
+output$screeplot <- renderPlot({
+  req(joined_drought_pca())  # Ensure PCA is ready
+  pca_result <- joined_drought_pca()  # Get PCA result
+  
+  pc_names <- colnames(pca_result$rotation)
+  sd_vec <- pca_result$sdev
+  var_vec <- sd_vec^2  # sd = variance^2
+  
+  pct_expl_df <- data.frame(v = var_vec,
+                            pct_v = var_vec / sum(var_vec),
+                            pc = pc_names)
+  
+  # Screeplot
+  ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
+    geom_col(fill = "steelblue") +
+    geom_text(aes(label = scales::percent(round(pct_v, 3))), vjust = 0, nudge_y = .5, angle = 90) +
+    labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
+    theme_bw() +
+    theme(axis.text = element_text(size = 10)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+})
+
+output$data_source <- renderTable({
+  data_source 
+})
+>>>>>>> 2c8af29638d6e21b3a702eed200b198dc1b2090d
   
 }
 
