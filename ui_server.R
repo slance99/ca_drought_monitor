@@ -160,8 +160,6 @@ UI <- fluidPage(
                Use the tabs above to navigate through the different sections of the app."),
              
              tags$br(), # Add a line break
-             
-             p("The [ INSERT DATA TYPE ] data was sourced from [ INSERT DATA SOURCE ] - repeat for all data as is input into the project")
     ),
     
     ############ DROUGHT MAP - TB ############
