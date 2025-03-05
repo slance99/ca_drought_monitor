@@ -37,6 +37,9 @@ shp_data <- data.frame(
 #loading in climate data 
 climate_data <- read_csv(here("data", "monthly_prism_climate.csv"))
 
+#loading drought pca data
+joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
+
 ############################################################################
 ############################################################################
 ############################################################################
@@ -143,7 +146,7 @@ UI <- fluidPage(
                This PCA focuses on climate variables and their relatation to drought conditions within California Counties in 2021."
              ),
              
-             plotOutput("biplot"),
+             plotOutput("biplot", height = "350px", width = "75%"),
              plotOutput("screeplot", height = "350px", width = "75%")
              
     ),
@@ -388,58 +391,64 @@ joined_drought_data <- reactive({
   read_csv(here("data","joined_drought_data.csv"))
 })
 
-  joined_drought_pca <- joined_drought_data |>
+# Prepare PCA data
+joined_drought_pca <- reactive({
+  req(joined_drought_data())  # Ensure data is available
+  data <- joined_drought_data() |> 
     select(where(is.numeric)) |>
     drop_na() |>
     select_if(~ var(.x, na.rm = TRUE) != 0)  # Remove zero-variance columns
   
-  # scale
-  joined_drought_pca <- joined_drought_pca |> 
-    prcomp(scale = TRUE)
-  
-  # Define custom colors in a vector
-  color_values <- c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001")
-  
-  color_palette <- setNames(color_values, c("D0", "D1", "D2", "D3", "D4"))
-  
-  output$biplot <- renderPlot({
-    # Plot the PCA biplot with ggplot2
-    autoplot(joined_drought_pca, 
-                      data = joined_drought_data, 
-                      loadings = TRUE,
-                      color = "USDM_index",
-                      loadings.label = TRUE,
-                      loadings.colour = "black",
-                      loadings.label.colour = "black",
-                      loadings.label.vjust = -0.5) +
-      scale_color_manual(values = color_palette) +
-      theme_minimal() +
-      labs(title = "PCA of Drought and Climate Conditions in CA Counties (2021)",
-             colour = "Drought Index", shape = "County")
+  # Perform PCA
+  prcomp(data, scale = TRUE)
 })
+
+# Define custom colors in a vector
+color_values <- c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001")
+color_palette <- setNames(color_values, c("D0", "D1", "D2", "D3", "D4"))
+
+output$biplot <- renderPlot({
+  req(joined_drought_pca())  # Ensure PCA is ready
+  pca_result <- joined_drought_pca()  # Get PCA result
   
-  ### Scree Plots ###
+  # Plot the PCA biplot with ggplot2
+  autoplot(pca_result, 
+           data = joined_drought_data(), 
+           loadings = TRUE,
+           color = "USDM_index",
+           loadings.label = TRUE,
+           loadings.colour = "black",
+           loadings.label.colour = "black",
+           loadings.label.vjust = -0.5) +
+    scale_color_manual(values = color_palette) +
+    theme_minimal() +
+    labs(title = "PCA of Drought and Climate Conditions in CA Counties (2021)",
+         colour = "Drought Index", shape = "County")
+})
+
+### Scree Plots ###
+
+# Create a dataframe with the necessary ingredients to make a scree plot
+output$screeplot <- renderPlot({
+  req(joined_drought_pca())  # Ensure PCA is ready
+  pca_result <- joined_drought_pca()  # Get PCA result
   
-  # create a dataframe with the necessary indgreidents to make a screeplot
-  
-  pc_names <- colnames(joined_drought_pca$rotation)
-  sd_vec <- joined_drought_pca$sdev
-  var_vec <- sd_vec^2    # sd = variance^2
-  
+  pc_names <- colnames(pca_result$rotation)
+  sd_vec <- pca_result$sdev
+  var_vec <- sd_vec^2  # sd = variance^2
   
   pct_expl_df <- data.frame(v = var_vec,
                             pct_v = var_vec / sum(var_vec),
                             pc = pc_names)
   
   # Screeplot
-  output$screeplot <- renderPlot({
-    ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
-      geom_col(fill="steelblue") +
-      geom_text(aes(label = scales::percent(round(pct_v,3))), vjust = 0, nudge_y = .5, angle=90) +
-      labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
-      theme_bw()+
-      theme(axis.text = element_text(size=10)) +
-      theme(axis.text.x = element_text(angle=45,hjust=1))
+  ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
+    geom_col(fill = "steelblue") +
+    geom_text(aes(label = scales::percent(round(pct_v, 3))), vjust = 0, nudge_y = .5, angle = 90) +
+    labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
+    theme_bw() +
+    theme(axis.text = element_text(size = 10)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 })
   
 }
