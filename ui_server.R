@@ -35,7 +35,16 @@ shp_data <- data.frame(
   distinct(year, .keep_all = TRUE)
 
 #loading in climate data 
-climate_data <- read_csv(here("data", "monthly_prism_climate.csv"))
+climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
+  mutate(
+    climate_factor = recode(climate_factor, 
+                            ppt_mm = "Precipitation (mm)",
+                            tmax_degrees_c = "Max Temperature (degrees C)",
+                            tmean_degrees_c = "Mean Temperature (degrees C)",
+                            tmin_degrees_c = "Minimum Temperature (degrees C)",
+                            vpdmin_h_pa = "Minimum Vapor Pressure Deficit (hPa)",
+                            vpdmax_h_pa = "Maximum Vapor Pressure Deficit (hPa)"))
+
 
 #loading drought pca data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
@@ -290,7 +299,6 @@ SERVER <- function(input, output, session) {
   
   ### climate trends tab - sam 
   
-  # Load the data reactively
   observe({
     counties <- unique(climate_data$county)
     updateSelectInput(session, "county_cl", choices = counties)
@@ -315,10 +323,12 @@ SERVER <- function(input, output, session) {
     req(input$climate_factor)
     data <- filtered_data() 
     
-    ggplot(data, aes(x = date, y = value)) + 
+    climate_palette <- c()
+    
+    ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
       geom_line(size = 1.2) +  # Slightly thicker line for better visibility
-      scale_fill_viridis(option = "plasma") +  # Using fill for color scaling
       theme_classic() +
+      scale_color_manual(values = climate_palette) +  # Apply the custom color palette
       labs(x = "Year", 
            y = "Value", 
            title = paste(input$climate_factor, "Trend in", input$county_cl)) +
