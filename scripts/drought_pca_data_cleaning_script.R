@@ -69,7 +69,7 @@ joined_drought_data <- joined_drought_data %>%
   ))
 
 
-write_csv(joined_drought_data, here("data","joined_drought_data"))
+write_csv(joined_drought_data, here("data","joined_drought_data.csv"))
 
 ##############
 ### PCA 
