@@ -190,8 +190,16 @@ UI <- fluidPage(
              selectInput("ej_variable",
                          label = "Select EJ Factor",
                          choices = NULL),
-             plotOutput("ej_box_plot"),
-             tableOutput("meta_data")
+             
+             fluidRow(
+               column(5,  
+                      tableOutput("meta_data")
+               ),
+               column(6,
+                      offset = 1,
+                      plotOutput("ej_box_plot", height = "650px", width = "80%")
+               )
+             )
     )
   )
 )
@@ -377,12 +385,12 @@ output$ej_box_plot <- renderPlot({
   data <- filtered_ej_data()
   
   ggplot(data, aes(x = county, y = value, fill = county)) + 
-    geom_boxplot() +
+    geom_boxplot(alpha = 0.8) +
     theme_minimal() +
     labs(x = "County", 
          y = "Value", 
          title = paste(input$ej_variable)) +
-    scale_fill_brewer(palette = "Pastel1") +
+    scale_fill_manual(values = c("grey", "#E95420")) +  
     theme(legend.position = "none")
 })
 

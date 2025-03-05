@@ -150,4 +150,4 @@ autoplot(joined_drought_pca,
   )
 
 
-
+#E95420
