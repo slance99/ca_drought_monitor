@@ -183,11 +183,12 @@ UI <- fluidPage(
                          choices = NULL),
              
              fluidRow(
-               column(4,  
+               column(5,  
                       tableOutput("meta_data")
                ),
-               column(8,  
-                      plotOutput("ej_box_plot", height = "650px", width = "75%")
+               column(6,
+                      offset = 1,
+                      plotOutput("ej_box_plot", height = "650px", width = "80%")
                )
              )
     )
