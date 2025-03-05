@@ -96,6 +96,43 @@ UI <- fluidPage(
     color: white !important;
     border: 1px solid #D43F00 !important;
   }
+  
+   /* Dropdown styles */
+  select {
+    background-color: white !important; /* Set the dropdown background to white */
+    color: #E95420 !important; /* Set text color to orange */
+    border: 1px solid #D43F00 !important; /* Orange border */
+    font-size: 14px !important;
+  }
+
+  select:focus {
+    background-color: white !important; /* Keep the background white when focused */
+    border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
+    color: #E95420 !important; /* Keep the text color as orange */
+  }
+
+  /* Optional: Add styles to dropdown list items */
+  .selectize-dropdown, .selectize-input {
+    background-color: white !important; /* Dropdown list background stays white */
+    color: #E95420 !important; /* Dropdown list text color is orange */
+    border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
+  }
+
+  .selectize-dropdown .item {
+    color: #E95420 !important; /* Dropdown items have orange text */
+  }
+
+  /* Optional: Hover effect for dropdown items */
+  .selectize-input:focus, .selectize-dropdown:focus {
+    border-color: #E95420 !important; /* Highlight the border with orange */
+    background-color: white !important; /* Keep the background white */
+  }
+
+  /* Optional: Change the background color when selecting an item */
+  .selectize-dropdown .active {
+    background-color: #E95420 !important;
+    color: white !important;
+  }
 ")),
 
   # Application title
@@ -208,7 +245,9 @@ UI <- fluidPage(
                ),
                column(6,
                       offset = 1,
-                      plotOutput("ej_box_plot", height = "650px", width = "80%")
+                      plotOutput("ej_box_plot", height = "650px", width = "80%"),
+                      tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
+                                      According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
                )
              )
     ),
@@ -323,6 +362,8 @@ SERVER <- function(input, output, session) {
       )
   })
   
+  ############
+  
   ### climate trends tab - sam 
   
   observe({
@@ -413,7 +454,7 @@ output$ej_box_plot <- renderPlot({
     geom_boxplot(alpha = 0.8) +
     theme_minimal() +
     labs(x = "County", 
-         y = "Value", 
+         y = paste(input$ej_variable), 
          title = paste(input$ej_variable)) +
     scale_fill_manual(values = c("grey", "#E95420")) +  
     theme(legend.position = "none")

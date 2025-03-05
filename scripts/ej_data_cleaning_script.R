@@ -32,4 +32,20 @@ write_csv(ces4_longer, here("data","ces4_longer.csv"))
 
 
 
+########
+ces4 <- read_csv(here("data", "CES4.csv"))
+
+ces4_la_eldor_census_count <- ces4 |>
+  janitor::clean_names() |>
+  filter(california_county %in% c("Los Angeles", "El Dorado")) |>
+  group_by(california_county) |>
+  summarize(count = n(), .groups = "drop")
+
+
+
+
+
+
+
+
 
