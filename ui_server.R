@@ -92,6 +92,43 @@ UI <- fluidPage(
     color: white !important;
     border: 1px solid #D43F00 !important;
   }
+  
+   /* Dropdown styles */
+  select {
+    background-color: white !important; /* Set the dropdown background to white */
+    color: #E95420 !important; /* Set text color to orange */
+    border: 1px solid #D43F00 !important; /* Orange border */
+    font-size: 14px !important;
+  }
+
+  select:focus {
+    background-color: white !important; /* Keep the background white when focused */
+    border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
+    color: #E95420 !important; /* Keep the text color as orange */
+  }
+
+  /* Optional: Add styles to dropdown list items */
+  .selectize-dropdown, .selectize-input {
+    background-color: white !important; /* Dropdown list background stays white */
+    color: #E95420 !important; /* Dropdown list text color is orange */
+    border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
+  }
+
+  .selectize-dropdown .item {
+    color: #E95420 !important; /* Dropdown items have orange text */
+  }
+
+  /* Optional: Hover effect for dropdown items */
+  .selectize-input:focus, .selectize-dropdown:focus {
+    border-color: #E95420 !important; /* Highlight the border with orange */
+    background-color: white !important; /* Keep the background white */
+  }
+
+  /* Optional: Change the background color when selecting an item */
+  .selectize-dropdown .active {
+    background-color: #E95420 !important;
+    color: white !important;
+  }
 ")),
 
   # Application title
@@ -311,6 +348,8 @@ SERVER <- function(input, output, session) {
           c('black', 'black', 'black', 'black', '#F5F5F5'))
       )
   })
+  
+  ############
   
   ### climate trends tab - sam 
   
