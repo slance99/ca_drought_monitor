@@ -52,6 +52,8 @@ climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
     TRUE ~ county)) |>
   filter(!(county %in% c("Del Norte", "Modoc", "Mono", "Alpine"))) # these counties dont match up in each dataset
 
+climate_data <- climate_data |>
+  mutate(county = paste0(climate_data$county, " County"))
 
 #loading drought pca data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
@@ -128,11 +130,11 @@ UI <- fluidPage(
   .selectize-dropdown .item {
     color: #E95420 !important; /* Dropdown items have orange text */
   }
-
-  /* Optional: Hover effect for dropdown items */
-  .selectize-input:focus, .selectize-dropdown:focus {
-    border-color: #E95420 !important; /* Highlight the border with orange */
-    background-color: white !important; /* Keep the background white */
+  
+   /* Hover effect for dropdown items */
+  .selectize-dropdown .item:hover {
+    background-color: #E95420 !important; /* Orange background on hover */
+    color: white !important; /* White text on hover */
   }
 
   /* Optional: Change the background color when selecting an item */
