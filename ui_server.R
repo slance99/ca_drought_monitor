@@ -60,6 +60,13 @@ joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
 #read in data source table
 data_source <- read_csv(here("data","data_citations.csv"))
 
+data_source$`Source` <- paste0(
+  '<a href="', data_source$`Link`, '" target="_blank">',
+  data_source$`Source`, '</a>'
+)
+
+data_source <- data_source[, !names(data_source) %in% "Link"]
+
 ############################################################################
 ############################################################################
 ############################################################################
@@ -254,7 +261,7 @@ UI <- fluidPage(
     tabPanel("Data & References",
              h3("Data Sources"),
              p("The data used in this Shiny app was sourced from the following datasets:"),
-             tableOutput("data_source")
+             DTOutput("data_source")
     )
   )
 )
@@ -347,7 +354,11 @@ SERVER <- function(input, output, session) {
               options = list(
                 dom = 't',
                 paging = FALSE,  
-                searching = FALSE  
+                searching = FALSE,
+                columnDefs = list(list(
+                  targets = 0,             
+                  visible = FALSE          
+                ))
               ),
               escape = FALSE) %>%
       formatStyle(
@@ -523,18 +534,28 @@ output$screeplot <- renderPlot({
                             pct_v = var_vec / sum(var_vec),
                             pc = pc_names)
   
-  # Screeplot
-  ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
-    geom_col(fill = "steelblue") +
-    geom_text(aes(label = scales::percent(round(pct_v, 3))), vjust = 0, nudge_y = .5, angle = 90) +
-    labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
-    theme_bw() +
-    theme(axis.text = element_text(size = 10)) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#   # Screeplot
+#   ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
+#     geom_col(fill = "steelblue") +
+#     geom_text(aes(label = scales::percent(round(pct_v, 3))), vjust = 0, nudge_y = .5, angle = 90) +
+#     labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
+#     theme_bw() +
+#     theme(axis.text = element_text(size = 10)) +
+#     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 })
 
-output$data_source <- renderTable({
-  data_source 
+output$data_source <- renderDT({
+  datatable(data_source, 
+            escape = FALSE,
+            option = list(
+              dom = 't',
+              paging = FALSE,
+              searching = FALSE, 
+              columnDefs = list(list(
+                targets = 0,            
+                visible = FALSE         
+              ))
+            ))
 })
   
 }
