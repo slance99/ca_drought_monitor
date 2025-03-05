@@ -501,7 +501,6 @@ pca_data <- reactive({
   # Remove any columns that have zero variance
   data_selected <- data_selected[, apply(data_selected, 2, var) != 0]
   
-  return(data_selected)
 })
 
 # Perform PCA on the selected variables
@@ -519,7 +518,6 @@ output$biplot <- renderPlot({
   req(pca_result())
   pca <- pca_result()
   
-  # Check if autoplot will work
   autoplot(pca, 
            data = joined_drought_data(), 
            loadings = TRUE, 
@@ -532,37 +530,12 @@ output$biplot <- renderPlot({
     labs(title = "PCA of Selected Drought and Climate Conditions")
 })
 
-
-<<<<<<< HEAD
-
-=======
-# Create a dataframe with the necessary ingredients to make a scree plot
-output$screeplot <- renderPlot({
-  req(joined_drought_pca())  # Ensure PCA is ready
-  pca_result <- joined_drought_pca()  # Get PCA result
-  
-  pc_names <- colnames(pca_result$rotation)
-  sd_vec <- pca_result$sdev
-  var_vec <- sd_vec^2  # sd = variance^2
-  
-  pct_expl_df <- data.frame(v = var_vec,
-                            pct_v = var_vec / sum(var_vec),
-                            pc = pc_names)
-  
-  # Screeplot
-  ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
-    geom_col(fill = "steelblue") +
-    geom_text(aes(label = scales::percent(round(pct_v, 3))), vjust = 0, nudge_y = .5, angle = 90) +
-    labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
-    theme_bw() +
-    theme(axis.text = element_text(size = 10)) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-})
+### Data sources tab
 
 output$data_source <- renderTable({
   data_source 
+  
 })
->>>>>>> 2c8af29638d6e21b3a702eed200b198dc1b2090d
   
 }
 
