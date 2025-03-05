@@ -191,7 +191,7 @@ UI <- fluidPage(
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
-                           <b>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</b>")),
+                           <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b><br><br>")),
                       sliderInput("year", "Select Year:",
                                   min = min(shp_data$year), 
                                   max = max(shp_data$year), 
