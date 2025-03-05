@@ -181,8 +181,15 @@ UI <- fluidPage(
              selectInput("ej_variable",
                          label = "Select EJ Factor",
                          choices = NULL),
-             plotOutput("ej_box_plot"),
-             tableOutput("meta_data")
+             
+             fluidRow(
+               column(4,  
+                      tableOutput("meta_data")
+               ),
+               column(8,  
+                      plotOutput("ej_box_plot", height = "650px", width = "75%")
+               )
+             )
     )
   )
 )
