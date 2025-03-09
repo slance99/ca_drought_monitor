@@ -73,87 +73,127 @@ data_source <- data_source[, !names(data_source) %in% "Link"]
 ############################################################################
 ############################################################################
 
-# Define UI define
 UI <- fluidPage(
   theme = shinytheme("united"),
   
-  # Custom CSS for styling the slider
-  tags$style(HTML("
-  .irs-bar {
-    background: #E95420 !important;
-    border-top: 1px solid #D43F00 !important;
-    border-bottom: 1px solid #D43F00 !important;
-  }
+  tags$head(
+    tags$style(HTML("
+     
 
-  .irs-bar-edge {
-    background: #E95420 !important;
-    border: 1px solid #D43F00 !important;
-  }
+      .irs-bar {
+        background: #E95420 !important;
+        border-top: 1px solid #D43F00 !important;
+        border-bottom: 1px solid #D43F00 !important;
+      }
 
-  .irs-slider {
-    background: #D43F00 !important;
-    border: 1px solid #D43F00 !important;
-  }
+      .irs-bar-edge {
+        background: #E95420 !important;
+        border: 1px solid #D43F00 !important;
+      }
+      
+      
+       /* Style for the play button */
+      .irs-slider-animate-btn {
+        font-size: 30px !important; /* Adjust the font size */
+        transform: scale(1.5) !important; /* Scale the button */
+        width: 50px !important; /* Adjust the width */
+        height: 50px !important; /* Adjust the height */
+        line-height: 50px !important; /* Center the text vertically */
+      }
 
-  .irs-grid-text {
-    font-size: 12px !important;
-    color: #555 !important;
-  }
+      .irs-slider {
+        background: #D43F00 !important;
+        border: 1px solid #D43F00 !important;
+      }
 
-  .irs-single {
-    background: #E95420 !important;
-    color: white !important;
-    border: 1px solid #D43F00 !important;
-  }
-  
-   /* Dropdown styles */
-  select {
-    background-color: white !important; /* Set the dropdown background to white */
-    color: #E95420 !important; /* Set text color to orange */
-    border: 1px solid #D43F00 !important; /* Orange border */
-    font-size: 14px !important;
-  }
+      .irs-grid-text {
+        font-size: 12px !important;
+        color: #555 !important;
+      }
 
-  select:focus {
-    background-color: white !important; /* Keep the background white when focused */
-    border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
-    color: #E95420 !important; /* Keep the text color as orange */
-  }
+      .irs-single {
+        background: #E95420 !important;
+        color: white !important;
+        border: 1px solid #D43F00 !important;
+      }
 
-  /* Optional: Add styles to dropdown list items */
-  .selectize-dropdown, .selectize-input {
-    background-color: white !important; /* Dropdown list background stays white */
-    color: #E95420 !important; /* Dropdown list text color is orange */
-    border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
-  }
+      /* Style for the checkbox input itself */
+      div.shiny-input-checkbox-group input[type='checkbox'] {
+        border: 2px solid #E95420 !important;  /* Orange border */
+        background-color: #fff !important;     /* Default white background */
+      }
 
-  .selectize-dropdown .item {
-    color: #E95420 !important; /* Dropdown items have orange text */
-  }
-  
-   /* Hover effect for dropdown items */
-  .selectize-dropdown .item:hover {
-    background-color: #E95420 !important; /* Orange background on hover */
-    color: white !important; /* White text on hover */
-  }
+      /* Style for checked checkboxes */
+      div.shiny-input-checkbox-group input[type='checkbox']:checked {
+        background-color: #E95420 !important;  /* Orange background when checked */
+        border-color: #E95420 !important;      /* Orange border when checked */
+      }
 
-  /* Optional: Change the background color when selecting an item */
-  .selectize-dropdown .active {
-    background-color: #E95420 !important;
-    color: white !important;
-  }
-  
-  .checkbox-inline {
-      color: #E95420;  /* Orange text for checkboxes (matches United theme) */
-    }
-    .checkbox input[type='checkbox']:checked {
-      background-color: #E95420;  /* Orange background when checked */
-      border-color: #E95420;      /* Orange border when checked */
-    }
-    .checkbox input[type='checkbox'] {
-      border: 2px solid #E95420; /* Orange border for checkboxes */
-    }
-")),
+      /* Style for the labels inside checkbox input groups */
+      div.shiny-input-checkbox-group label {
+        color: #E95420 !important; /* Orange text */
+      }
+
+      /* Style for the container of the checkboxes to ensure no override from shiny theme */
+      div.shiny-input-checkbox-group {
+        display: inline-block;
+      }
+
+      /* Style the box itself */
+      div.checkbox input[type='checkbox'] {
+        border: 2px solid #E95420 !important;  /* Orange border */
+        background-color: #fff !important;     /* Default white background */
+      }
+
+      /* Style for checked checkboxes */
+      div.checkbox input[type='checkbox']:checked {
+        background-color: #E95420 !important;  /* Orange background when checked */
+        border-color: #E95420 !important;      /* Orange border when checked */
+      }
+
+      /* Style the labels */
+      div.checkbox label {
+        color: #E95420 !important; /* Orange text */
+      }
+
+      /* Dropdown styles */
+      select {
+        background-color: white !important; /* Set the dropdown background to white */
+        color: #E95420 !important; /* Set text color to orange */
+        border: 1px solid #D43F00 !important; /* Orange border */
+        font-size: 14px !important;
+      }
+
+      select:focus {
+        background-color: white !important; /* Keep the background white when focused */
+        border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
+        color: #E95420 !important; /* Keep the text color as orange */
+      }
+
+      /* Optional: Add styles to dropdown list items */
+      .selectize-dropdown, .selectize-input {
+        background-color: white !important; /* Dropdown list background stays white */
+        color: #E95420 !important; /* Dropdown list text color is orange */
+        border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
+      }
+
+      .selectize-dropdown .item {
+        color: #E95420 !important; /* Dropdown items have orange text */
+      }
+
+      /* Hover effect for dropdown items */
+      .selectize-dropdown .item:hover {
+        background-color: #E95420 !important; /* Orange background on hover */
+        color: white !important; /* White text on hover */
+      }
+
+      /* Optional: Change the background color when selecting an item */
+      .selectize-dropdown .active {
+        background-color: #E95420 !important;
+        color: white !important;
+      }
+    "))
+  ),
 
   # Application title
   titlePanel("California Drought Explorer"),
@@ -427,7 +467,7 @@ SERVER <- function(input, output, session) {
     ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
       geom_line(size = 1.2) +  # Slightly thicker line for better visibility
       geom_point(size = 3) +  # Larger points for better visibility)
-      theme_classic() +
+      theme_minimal() +
       scale_color_manual(values = climate_palette) +  # Apply the custom color palette
       labs(x = "Year", 
            y = paste(input$climate_factor), 
@@ -482,9 +522,17 @@ output$ej_box_plot <- renderPlot({
     theme_minimal() +
     labs(x = "County", 
          y = paste(input$ej_variable), 
-         title = paste(input$ej_variable)) +
+         title = paste("Differences in", input$ej_variable, "Between El Dorado and Los Angeles Counties")) +
     scale_fill_manual(values = c("grey", "#E95420")) +  
-    theme(legend.position = "none")
+    theme(
+      axis.text.x = element_text(hjust = 1, size = 14),  # Larger x-axis labels
+      axis.text.y = element_text(size = 14),  # Larger y-axis labels
+      axis.title.x = element_text(size = 16),  # Larger x-axis title
+      axis.title.y = element_text(size = 16),  # Larger y-axis title
+      plot.title = element_text(size = 16, hjust = 0.5),  # Larger title
+      legend.position = "none",
+      legend.text = element_text(size = 12) # Larger legend text
+    )
 })
 
 # Render the table

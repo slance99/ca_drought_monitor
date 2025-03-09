@@ -1,4 +1,4 @@
-county,USDM_index,longitude,latitude,elevation_m,date,ppt_mm,tmin_degrees_c,tmean_degrees_c,tmax_degrees_c,vpdmin_h_pa,vpdmax_h_pa,drought_index
+county,USDM_index,Longitude,Latitude,Elevation (m),date,Precipitation (mm),Min. Temperature (C),Avg. Temperature (C),Max Temperature (C),Vapor Pressure Deficit (hPa),Maximum Vapor Pressure Deficit (hPa),Drought Index 
 Alameda,D3,-121.91,37.65,179,2021,545.09,8.4,15.4,22.4,1.55,19.71,3
 Amador,D4,-120.65,38.44,763,2021,980.12,9.8,15.8,21.7,4.89,21.5,4
 Calaveras,D4,-120.56,38.18,484,2021,772.12,8.7,16.2,23.6,3.51,25.02,4

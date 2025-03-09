@@ -1,8 +1,8 @@
-Tab,Dataset Name,Description ,Source
-Drought Map,California State Boundary,California state boundary shapefile,U.S. Census Bureau
-Drought Map,U.S. Drought Monitor GIS Data,Spatial extent of drought severity classes from 2000-2024,National Drought Mitigation Center
-Principal Components Analysis,California Historical Fire Perimeters,"Year, acres burned, and county of fires in California from 1900 to present",California Department of Forestry and Fire Protection
-Principal Components Analysis,U.S. Drought Monitor Statistics by Threshold,Drought indices by percent area of California counties,National Drought Mitigation Center
-Principal Components Analysis,PRISM Climate Data,"Monthly temperature, precipitation, and vapor pressure deficit data for the state of California",PRISM Climate Group
-Climate Trends,PRISM Climate Data,"Monthly temperature, precipitation, and vapor pressure deficit data for the state of California",PRISM Climate Group
-Environmental Justice,CalEnviroscreen 4.0,Environmental impacts by census tract,Office of Environmental Health Hazard Assessment
+Tab,Dataset Name,Description ,Source,Link
+Drought Map,California State Boundary,California state boundary shapefile,U.S. Census Bureau,https://data.ca.gov/dataset/ca-geographic-boundaries/resource/3db1e426-fb51-44f5-82d5-a54d7c6e188b
+Drought Map,U.S. Drought Monitor GIS Data,Spatial extent of drought severity classes from 2000-2024,National Drought Mitigation Center,https://droughtmonitor.unl.edu/DmData/GISData.aspx
+PCA,California Historical Fire Perimeters,"Year, acres burned, and county of fires in California from 1900 to present",California Department of Forestry and Fire Protection,https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-all/about
+PCA,U.S. Drought Monitor Statistics by Threshold,Drought indices by percent area of California counties,National Drought Mitigation Center,https://droughtmonitor.unl.edu/DmData/DataDownload/StatisticsbyThreshold.aspx
+PCA,PRISM Climate Data,"Monthly temperature, precipitation, and vapor pressure deficit data for the state of California",PRISM Climate Group,https://prism.oregonstate.edu/
+Climate,PRISM Climate Data,"Monthly temperature, precipitation, and vapor pressure deficit data for the state of California",PRISM Climate Group,https://prism.oregonstate.edu/
+Environmental Justice,CalEnviroscreen 4.0,Environmental impacts by census tract,Office of Environmental Health Hazard Assessment,https://oehha.ca.gov/calenviroscreen/report/calenviroscreen-40
