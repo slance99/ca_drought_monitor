@@ -52,6 +52,8 @@ climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
     TRUE ~ county)) |>
   filter(!(county %in% c("Del Norte", "Modoc", "Mono", "Alpine"))) # these counties dont match up in each dataset
 
+climate_data <- climate_data |>
+  mutate(county = paste0(climate_data$county, " County"))
 
 #loading drought pca data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
@@ -60,80 +62,138 @@ joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
 #read in data source table
 data_source <- read_csv(here("data","data_citations.csv"))
 
+data_source$`Source` <- paste0(
+  '<a href="', data_source$`Link`, '" target="_blank">',
+  data_source$`Source`, '</a>'
+)
+
+data_source <- data_source[, !names(data_source) %in% "Link"]
+
 ############################################################################
 ############################################################################
 ############################################################################
 
-# Define UI define
 UI <- fluidPage(
   theme = shinytheme("united"),
   
-  # Custom CSS for styling the slider
-  tags$style(HTML("
-  .irs-bar {
-    background: #E95420 !important;
-    border-top: 1px solid #D43F00 !important;
-    border-bottom: 1px solid #D43F00 !important;
-  }
+  tags$head(
+    tags$style(HTML("
+     
 
-  .irs-bar-edge {
-    background: #E95420 !important;
-    border: 1px solid #D43F00 !important;
-  }
+      .irs-bar {
+        background: #E95420 !important;
+        border-top: 1px solid #D43F00 !important;
+        border-bottom: 1px solid #D43F00 !important;
+      }
 
-  .irs-slider {
-    background: #D43F00 !important;
-    border: 1px solid #D43F00 !important;
-  }
+      .irs-bar-edge {
+        background: #E95420 !important;
+        border: 1px solid #D43F00 !important;
+      }
+      
+      
+       /* Style for the play button */
+      .irs-slider-animate-btn {
+        font-size: 30px !important; /* Adjust the font size */
+        transform: scale(1.5) !important; /* Scale the button */
+        width: 50px !important; /* Adjust the width */
+        height: 50px !important; /* Adjust the height */
+        line-height: 50px !important; /* Center the text vertically */
+      }
 
-  .irs-grid-text {
-    font-size: 12px !important;
-    color: #555 !important;
-  }
+      .irs-slider {
+        background: #D43F00 !important;
+        border: 1px solid #D43F00 !important;
+      }
 
-  .irs-single {
-    background: #E95420 !important;
-    color: white !important;
-    border: 1px solid #D43F00 !important;
-  }
-  
-   /* Dropdown styles */
-  select {
-    background-color: white !important; /* Set the dropdown background to white */
-    color: #E95420 !important; /* Set text color to orange */
-    border: 1px solid #D43F00 !important; /* Orange border */
-    font-size: 14px !important;
-  }
+      .irs-grid-text {
+        font-size: 12px !important;
+        color: #555 !important;
+      }
 
-  select:focus {
-    background-color: white !important; /* Keep the background white when focused */
-    border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
-    color: #E95420 !important; /* Keep the text color as orange */
-  }
+      .irs-single {
+        background: #E95420 !important;
+        color: white !important;
+        border: 1px solid #D43F00 !important;
+      }
 
-  /* Optional: Add styles to dropdown list items */
-  .selectize-dropdown, .selectize-input {
-    background-color: white !important; /* Dropdown list background stays white */
-    color: #E95420 !important; /* Dropdown list text color is orange */
-    border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
-  }
+      /* Style for the checkbox input itself */
+      div.shiny-input-checkbox-group input[type='checkbox'] {
+        border: 2px solid #E95420 !important;  /* Orange border */
+        background-color: #fff !important;     /* Default white background */
+      }
 
-  .selectize-dropdown .item {
-    color: #E95420 !important; /* Dropdown items have orange text */
-  }
+      /* Style for checked checkboxes */
+      div.shiny-input-checkbox-group input[type='checkbox']:checked {
+        background-color: #E95420 !important;  /* Orange background when checked */
+        border-color: #E95420 !important;      /* Orange border when checked */
+      }
 
-  /* Optional: Hover effect for dropdown items */
-  .selectize-input:focus, .selectize-dropdown:focus {
-    border-color: #E95420 !important; /* Highlight the border with orange */
-    background-color: white !important; /* Keep the background white */
-  }
+      /* Style for the labels inside checkbox input groups */
+      div.shiny-input-checkbox-group label {
+        color: #E95420 !important; /* Orange text */
+      }
 
-  /* Optional: Change the background color when selecting an item */
-  .selectize-dropdown .active {
-    background-color: #E95420 !important;
-    color: white !important;
-  }
-")),
+      /* Style for the container of the checkboxes to ensure no override from shiny theme */
+      div.shiny-input-checkbox-group {
+        display: inline-block;
+      }
+
+      /* Style the box itself */
+      div.checkbox input[type='checkbox'] {
+        border: 2px solid #E95420 !important;  /* Orange border */
+        background-color: #fff !important;     /* Default white background */
+      }
+
+      /* Style for checked checkboxes */
+      div.checkbox input[type='checkbox']:checked {
+        background-color: #E95420 !important;  /* Orange background when checked */
+        border-color: #E95420 !important;      /* Orange border when checked */
+      }
+
+      /* Style the labels */
+      div.checkbox label {
+        color: #E95420 !important; /* Orange text */
+      }
+
+      /* Dropdown styles */
+      select {
+        background-color: white !important; /* Set the dropdown background to white */
+        color: #E95420 !important; /* Set text color to orange */
+        border: 1px solid #D43F00 !important; /* Orange border */
+        font-size: 14px !important;
+      }
+
+      select:focus {
+        background-color: white !important; /* Keep the background white when focused */
+        border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
+        color: #E95420 !important; /* Keep the text color as orange */
+      }
+
+      /* Optional: Add styles to dropdown list items */
+      .selectize-dropdown, .selectize-input {
+        background-color: white !important; /* Dropdown list background stays white */
+        color: #E95420 !important; /* Dropdown list text color is orange */
+        border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
+      }
+
+      .selectize-dropdown .item {
+        color: #E95420 !important; /* Dropdown items have orange text */
+      }
+
+      /* Hover effect for dropdown items */
+      .selectize-dropdown .item:hover {
+        background-color: #E95420 !important; /* Orange background on hover */
+        color: white !important; /* White text on hover */
+      }
+
+      /* Optional: Change the background color when selecting an item */
+      .selectize-dropdown .active {
+        background-color: #E95420 !important;
+        color: white !important;
+      }
+    "))
+  ),
 
   # Application title
   titlePanel("California Drought Explorer"),
@@ -171,7 +231,7 @@ UI <- fluidPage(
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
-                           <b>Use the time slider below to explore how drought conditions have evolved over time.</b>")),
+                           <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b><br><br>")),
                       sliderInput("year", "Select Year:",
                                   min = min(shp_data$year), 
                                   max = max(shp_data$year), 
@@ -207,7 +267,7 @@ UI <- fluidPage(
                                 label = "Select (at least) Two Variables for PCA",
                                 choices = NULL)),
              column(9,
-                    plotOutput("biplot", height = "350px", width = "75%"))
+                    plotOutput("biplot", height = "500px", width = "90%"))
              
     ),
     
@@ -229,7 +289,7 @@ UI <- fluidPage(
                          )
                ),
                column(8,
-                      plotOutput("climate_plot", height = "350px", width = "100%")
+                      plotOutput("climate_plot", height = "500px", width = "90%")
                       ))),
     
     ############ EJ - RB + TB ############
@@ -248,7 +308,7 @@ UI <- fluidPage(
                ),
                column(6,
                       offset = 1,
-                      plotOutput("ej_box_plot", height = "650px", width = "80%"),
+                      plotOutput("ej_box_plot", height = "500px", width = "90%"),
                       tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
                )
@@ -259,7 +319,7 @@ UI <- fluidPage(
     tabPanel("Data & References",
              h3("Data Sources"),
              p("The data used in this Shiny app was sourced from the following datasets:"),
-             tableOutput("data_source")
+             DTOutput("data_source")
     )
   )
 )
@@ -352,7 +412,11 @@ SERVER <- function(input, output, session) {
               options = list(
                 dom = 't',
                 paging = FALSE,  
-                searching = FALSE  
+                searching = FALSE,
+                columnDefs = list(list(
+                  targets = 0,             
+                  visible = FALSE          
+                ))
               ),
               escape = FALSE) %>%
       formatStyle(
@@ -403,7 +467,7 @@ SERVER <- function(input, output, session) {
     ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
       geom_line(size = 1.2) +  # Slightly thicker line for better visibility
       geom_point(size = 3) +  # Larger points for better visibility)
-      theme_classic() +
+      theme_minimal() +
       scale_color_manual(values = climate_palette) +  # Apply the custom color palette
       labs(x = "Year", 
            y = paste(input$climate_factor), 
@@ -458,9 +522,17 @@ output$ej_box_plot <- renderPlot({
     theme_minimal() +
     labs(x = "County", 
          y = paste(input$ej_variable), 
-         title = paste(input$ej_variable)) +
+         title = paste("Differences in", input$ej_variable, "Between El Dorado and Los Angeles Counties")) +
     scale_fill_manual(values = c("grey", "#E95420")) +  
-    theme(legend.position = "none")
+    theme(
+      axis.text.x = element_text(hjust = 1, size = 14),  # Larger x-axis labels
+      axis.text.y = element_text(size = 14),  # Larger y-axis labels
+      axis.title.x = element_text(size = 16),  # Larger x-axis title
+      axis.title.y = element_text(size = 16),  # Larger y-axis title
+      plot.title = element_text(size = 16, hjust = 0.5),  # Larger title
+      legend.position = "none",
+      legend.text = element_text(size = 12) # Larger legend text
+    )
 })
 
 # Render the table
@@ -487,7 +559,7 @@ observe({
   numeric_columns <- colnames(data)[sapply(data, is.numeric)]
   
   # Update the checkbox choices to include only numeric columns
-  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns)
+  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = numeric_columns)
 })
 
 # Filter the data based on selected variables for PCA
@@ -530,13 +602,46 @@ output$biplot <- renderPlot({
     labs(title = "PCA of Selected Drought and Climate Conditions")
 })
 
-### Data sources tab
+### Scree Plots ###
 
-output$data_source <- renderTable({
-  data_source 
+# Create a dataframe with the necessary ingredients to make a scree plot
+# output$screeplot <- renderPlot({
+#   req(joined_drought_pca())  # Ensure PCA is ready
+#   pca_result <- joined_drought_pca()  # Get PCA result
+#   
+#   pc_names <- colnames(pca_result$rotation)
+#   sd_vec <- pca_result$sdev
+#   var_vec <- sd_vec^2  # sd = variance^2
+#   
+#   pct_expl_df <- data.frame(v = var_vec,
+#                             pct_v = var_vec / sum(var_vec),
+#                             pc = pc_names)
   
+#   # Screeplot
+#   ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
+#     geom_col(fill = "steelblue") +
+#     geom_text(aes(label = scales::percent(round(pct_v, 3))), vjust = 0, nudge_y = .5, angle = 90) +
+#     labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
+#     theme_bw() +
+#     theme(axis.text = element_text(size = 10)) +
+#     theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# })
+
+output$data_source <- renderDT({
+  datatable(data_source, 
+            escape = FALSE,
+            options = list(
+              dom = 't',
+              paging = FALSE,
+              searching = FALSE, 
+              columnDefs = list(list(
+                targets = 0,            
+                visible = FALSE         
+              ))
+            ))
 })
-  
+
 }
 
 shinyApp(ui = UI, server = SERVER)
+
