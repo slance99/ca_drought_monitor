@@ -98,7 +98,6 @@ UI <- fluidPage(
   
   tags$head(
     tags$style(HTML("
-     
 
       .irs-bar {
         background: #E95420 !important;
@@ -148,45 +147,54 @@ UI <- fluidPage(
         background-color: #E95420 !important;  /* Orange background when checked */
         border-color: #E95420 !important;      /* Orange border when checked */
       }
-
-  /* Optional: Change the background color when selecting an item */
-  .selectize-dropdown .active {
-    background-color: #E95420 !important;
-    color: white !important;
-  }
-  
-  .checkbox-inline {
-      color: #E95420;  /* Orange text for checkboxes */
-    }
-    .checkbox input[type='checkbox']:checked {
-      background-color: #E95420;  /* Orange background when checked */
-      border-color: #E95420;      /* Orange border when checked */
-    }
-    .checkbox input[type='checkbox'] {
-      border: 2px solid #E95420; /* Orange border for checkboxes */
-    }
-
-      /* Style for the labels inside checkbox input groups */
-      div.shiny-input-checkbox-group label {
-        color: #E95420 !important; /* Orange text */
+      
+      /* Optional: Change the background color when selecting an item */
+      
+      .selectize-dropdown .active {
+        background-color: #E95420 !important;
+        color: white !important;
       }
-
-      /* Style for the container of the checkboxes to ensure no override from shiny theme */
-      div.shiny-input-checkbox-group {
-        display: inline-block;
+      
+      /* Make sure checkbox borders are orange */
+      .checkbox input[type='checkbox'] {
+        width: 15px;
+        height: 15px;
+        border: 2px solid #E95420 !important;
+        background-color: white !important;
+        appearance: none; /* Removes default checkbox styles */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border-radius: 3px; /* Optional: Rounds the corners */
+        cursor: pointer;
+        position: relative;
       }
-
-      /* Style the box itself */
-      div.checkbox input[type='checkbox'] {
-        border: 2px solid #E95420 !important;  /* Orange border */
-        background-color: #fff !important;     /* Default white background */
+      
+      /* When the checkbox is checked, change background color */
+      .checkbox input[type='checkbox']:checked {
+        background-color: #E95420 !important;
+        border-color: #E95420 !important;
+        position: relative;
       }
-
-      /* Style for checked checkboxes */
-      div.checkbox input[type='checkbox']:checked {
-        background-color: #E95420 !important;  /* Orange background when checked */
-        border-color: #E95420 !important;      /* Orange border when checked */
+      
+      /* Adding a checkmark when checked */
+      .checkbox input[type='checkbox']:checked::after {
+        content: '✓'; /* Unicode checkmark */
+        font-size: 11px;
+        color: white !important;
+        position: absolute;
+        top: 0px;
+        left: 1px;
+        right: 1px;
+        bottom: 1px;
       }
+      
+      /* Style checkbox labels */
+      .checkbox label,
+        div.checkbox label,
+        div.shiny-input-checkbox-group label {
+          color: #E95420 !important;
+          font-weight: bold;
+        }
 
       /* Style the labels */
       div.checkbox label {
