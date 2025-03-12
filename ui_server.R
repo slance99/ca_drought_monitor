@@ -655,7 +655,7 @@ joined_drought_data <- reactive({
 
 # Dynamically update the checkbox choices from the numeric columns of the data
 observe({
-  data <- joined_drought_data() |>
+  data <- joined_drought_data() %>% 
     select(-date)
   
   # Get only numeric columns
