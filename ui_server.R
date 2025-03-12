@@ -212,6 +212,7 @@ UI <- fluidPage(
         background-color: #E95420 !important;
         color: white !important;
       }
+      
     "))
   ),
 
@@ -593,7 +594,7 @@ output$ej_box_plot <- renderPlot({
     theme_minimal() +
     labs(x = "County", 
          y = paste(input$ej_variable), 
-         title = paste("Differences in", input$ej_variable, "Between El Dorado and Los Angeles Counties")) +
+         title = paste("Differences in", input$ej_variable, "\nBetween El Dorado and Los Angeles Counties")) +
     scale_fill_manual(values = c("grey", "#E95420")) +  
     theme(
       axis.text.x = element_text(hjust = 1, size = 14),  # Larger x-axis labels
@@ -603,7 +604,7 @@ output$ej_box_plot <- renderPlot({
       plot.title = element_text(size = 16, hjust = 0.5),  # Larger title
       legend.position = "none",
       legend.text = element_text(size = 12) # Larger legend text
-    )
+    ) 
 })
 
 # Render the table
