@@ -253,7 +253,26 @@ ui <- fluidPage(
     padding: 10px 20px !important; /* Increase button size */
     border-radius: 5px !important; /* Optional: Round the corners */
     }
-      
+    
+     /* Full height layout */
+      .full-height-row {
+        display: flex;
+        height: 100vh;  /* Ensure the row takes full viewport height */
+        margin: 0;
+      }
+      .full-height-column {
+        flex: 1;  /* Ensure both columns take up equal space */
+        padding: 0;
+        height: 100%;  /* Ensure the column takes the full height */
+      }
+      #map {
+        height: 100% !important; /* Ensure map takes full height of the column */
+        width: 100% !important;  /* Ensure map takes full width of the column */
+      }
+      .leaflet-container {
+        height: 100% !important;  /* Ensure leaflet map container has full height */
+        width: 100% !important;   /* Ensure leaflet map container has full width */
+      }
     "))
   ),
   
@@ -353,7 +372,7 @@ ui <- fluidPage(
       # DROUGHT MAP Tab
       tabPanel("Drought Map", 
                h3("Map of Drought Conditions from 2000 to 2024"),
-               fluidRow(
+               fluidRow(class = "full-height-row",
                  column(5,
                         p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
@@ -371,8 +390,8 @@ ui <- fluidPage(
                         h4("Drought Index Categories"),
                         DTOutput("drought_table")
                  ),
-                 column(6, 
-                        leafletOutput("map", height = "100vh", width = "100vh")
+                 column(6, class = "full-height-column",
+                        leafletOutput("map", height = "100%", width = "100%")
                  )
                )
       ),
@@ -400,7 +419,7 @@ ui <- fluidPage(
                         )
                  ),
                  column(7,
-                        plotOutput("biplot", height = "100vh", width = "90%")
+                        plotOutput("biplot", height = "100%", width = "90%")
                  )
                )
       ),
@@ -496,6 +515,22 @@ server <- function(input, output, session) {
   ############################
   
   # More drought server parameters
+  initial_year <- min(shp_data$year)  # Get the earliest year
+  initial_file <- shp_data %>%
+    filter(year == initial_year) %>%
+    pull(file_path)
+  
+  # Load the initial shapefile to ensure the map is not blank at start
+  initial_shp <- if (length(initial_file) > 0) {
+    st_read(initial_file[1]) %>%
+      st_transform(4326) %>%
+      st_make_valid() %>%
+      st_intersection(ca_boundary)  # Clip to California
+  } else {
+    NULL
+  }
+  
+  # Define the reactive dataset for selected year
   selected_shp <- reactive({
     req(input$year)
     
@@ -516,40 +551,57 @@ server <- function(input, output, session) {
     }
   })
   
+  # Render the map with the default (first time step) dataset
   output$map <- renderLeaflet({
     leaflet() %>%
-      addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  # Change to CartoDB Positron basemap
-      setView(lng = -119.5, lat = 37, zoom = 6)  # Centered on California
+      addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  
+      setView(lng = -119.5, lat = 37, zoom = 6) %>%  # Centered on California
+      {
+        if (!is.null(initial_shp)) {
+          addPolygons(., data = initial_shp, 
+                      fillColor = ~colorFactor(
+                        palette = c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001"), 
+                        domain = c(0, 1, 2, 3, 4)
+                      )(initial_shp$DM), 
+                      color = NA,
+                      weight = 0, 
+                      fillOpacity = 1,
+                      popup = ~paste("Drought Index:", DM))
+        } else {
+          .
+        }
+      }
   })
   
+  # Observe tab changes and reset map + time slider
   observeEvent(input$tabs, {
     if (input$tabs == "Drought Map") {
-      # Reset the map view
       leafletProxy("map") %>%
-        setView(lng = -119.5, lat = 37, zoom = 6)  # Reset to California
+        setView(lng = -119.5, lat = 37, zoom = 6)  # Reset view to California
       
-      # Reset the time slider
-      updateSliderInput(session, "year", value = min(shp_data$year))  # Reset to the minimum year value
+      updateSliderInput(session, "year", value = min(shp_data$year))  # Reset to the first year
     }
   })
   
+  # Observe changes in the year selection and update the map
   observe({
-    req(selected_shp())
+    req(selected_shp())  # Make sure the selected shapefile is available
     
-    # Define updated color palette for DM values
+    # Define color palette
     pal <- colorFactor(
       palette = c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001"), 
       domain = c(0, 1, 2, 3, 4)
     )
     
+    # Update the map with the polygons for the selected year
     leafletProxy("map") %>%
       clearShapes() %>%
       addPolygons(data = selected_shp(), 
-                  fillColor = ~pal(DM),  # Assign color based on DM values
+                  fillColor = ~pal(DM),  
                   color = NA,
                   weight = 0, 
                   fillOpacity = 1,
-                  popup = ~paste("Drought Index:", DM))  # Add popup info
+                  popup = ~paste("Drought Index:", DM))
   })
   
   drought_index_data <- data.frame(
