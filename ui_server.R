@@ -149,6 +149,23 @@ UI <- fluidPage(
         border-color: #E95420 !important;      /* Orange border when checked */
       }
 
+  /* Optional: Change the background color when selecting an item */
+  .selectize-dropdown .active {
+    background-color: #E95420 !important;
+    color: white !important;
+  }
+  
+  .checkbox-inline {
+      color: #E95420;  /* Orange text for checkboxes */
+    }
+    .checkbox input[type='checkbox']:checked {
+      background-color: #E95420;  /* Orange background when checked */
+      border-color: #E95420;      /* Orange border when checked */
+    }
+    .checkbox input[type='checkbox'] {
+      border: 2px solid #E95420; /* Orange border for checkboxes */
+    }
+
       /* Style for the labels inside checkbox input groups */
       div.shiny-input-checkbox-group label {
         color: #E95420 !important; /* Orange text */
