@@ -238,8 +238,12 @@ ui <- fluidPage(
         color: white !important;
       }
       
+      .rounding-picture {
+       border-radius: 5px; /* Rounds the edges of the image */
+      }
+      
       .regular-hover {
-    border-radius: 0px; /* Rounds the edges of the image */
+    border-radius: 5px; /* Rounds the edges of the image */
     transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
     }
     
@@ -291,6 +295,7 @@ ui <- fluidPage(
       tabPanel("Background",
                # Top full-width image
                tags$img(src = "lake_oroville_drought.jpg", 
+                        class = "rounding-picture",
                         alt = "Image of Lake Oroville Dam with the Treeline High Above the Water Level Illustrating Losses from Evaporation and Use", 
                         style = "width: 100%; height: 400px;"),
                tags$figcaption(tags$i("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger.")),
@@ -419,7 +424,7 @@ ui <- fluidPage(
                         )
                  ),
                  column(7,
-                        plotOutput("biplot", height = "100%", width = "90%")
+                        plotOutput("biplot", height = "100vh", width = "95%")
                  )
                )
       ),
@@ -820,7 +825,8 @@ output$biplot <- renderPlot({
            loadings.label = TRUE,
            loadings.colour = "black",
            loadings.label.colour = "black",
-           loadings.label.size = 5) +
+           loadings.label.size = 5,
+           size = 3) +
     scale_color_manual(values = color_palette) +
     theme_minimal() +
     labs(title = "PCA of Selected Drought and Climate Conditions") +
