@@ -348,7 +348,7 @@ ui <- fluidPage(
                         DTOutput("drought_table")
                  ),
                  column(6, 
-                        leafletOutput("map", height = "100vh")
+                        leafletOutput("map", height = "100vh", width = "100vh")
                  )
                )
       ),
@@ -368,7 +368,7 @@ ui <- fluidPage(
                              This PCA focuses on climate variables and their relationship to drought conditions within California Counties in 2021.
                              
                              <br><br><b><span style='color: #E95420;'>To understand the relationships between each
-                             of these variables, select at least two variables using the checkboxes below</span></b><br><br>")),
+                             of these variables, select at least two variables using the checkboxes below:</span></b><br><br>")),
                         
                         wellPanel(checkboxGroupInput("pca_variables",
                                                      label = "Climate Variables",
@@ -376,7 +376,7 @@ ui <- fluidPage(
                         )
                  ),
                  column(7,
-                        plotOutput("biplot", height = "500px", width = "90%")
+                        plotOutput("biplot", height = "100vh", width = "90%")
                  )
                )
       ),
@@ -692,10 +692,10 @@ observe({
   numeric_columns <- colnames(data)[sapply(data, is.numeric)]
   
   # Select variables to start
-  # selected_columns <- c("column1", "column3", "column5")
+  selected_columns <- c("Drought Index", "Total Acres Burned", "Total Precipitation (mm)", "Average Temperature C")
   
   # Update the checkbox choices to include only numeric columns
-  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = numeric_columns)
+  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = selected_columns)
 })
 
 # Filter the data based on selected variables for PCA
