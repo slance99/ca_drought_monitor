@@ -11,6 +11,12 @@ library(DescTools)
 drought_data <- read_csv(here("data","county_drought_index_2021.csv")) |>   ### no LA county?
   mutate(county = str_replace_all(Name, " County", ""))
   
+### Fire area data
+fire_area <- read_csv(here("data", "fire_data_2021.csv"))
+
+
+
+
 ### Mode funtction
 # Define the get_mode function that always returns a single mode value
 get_mode <- function(x) {
@@ -67,6 +73,9 @@ joined_drought_data <- joined_drought_data %>%
     USDM_index == "D4" ~ 4,
     TRUE ~ NA_real_
   ))
+
+joined_drought_data <-full_join(fire_area, joined_drought_data, by = c("county")) |>
+  drop_na()
 
 
 write_csv(joined_drought_data, here("data","joined_drought_data.csv"))
@@ -151,3 +160,8 @@ autoplot(joined_drought_pca,
 
 
 #E95420
+
+
+##########
+
+
