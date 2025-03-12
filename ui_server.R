@@ -144,7 +144,7 @@ UI <- fluidPage(
   }
   
   .checkbox-inline {
-      color: #E95420;  /* Orange text for checkboxes (matches United theme) */
+      color: #E95420;  /* Orange text for checkboxes */
     }
     .checkbox input[type='checkbox']:checked {
       background-color: #E95420;  /* Orange background when checked */
