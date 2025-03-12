@@ -17,7 +17,12 @@ library(ggfortify)
 ############################################################################
 ############################################################################
 
-# Loading in drought shapefile data
+#############################################
+
+########### DROUGHT MAP - TB ###########
+
+#############################################
+
 data_dir <- here("data", "drought_index")
 
 shp_files <- list.files(data_dir, pattern = "\\.shp$", recursive = TRUE, full.names = TRUE)
@@ -34,7 +39,12 @@ shp_data <- data.frame(
   arrange(year) %>% 
   distinct(year, .keep_all = TRUE)
 
-#loading + cleaning climate data 
+#############################################
+
+########### CLIMATE TRENDS - SL ###########
+
+#############################################
+
 climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
   mutate(
     climate_factor = recode(climate_factor, 
@@ -55,11 +65,21 @@ climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
 climate_data <- climate_data |>
   mutate(county = paste0(climate_data$county, " County"))
 
-#loading drought pca data
+#############################################
+
+########### PCA - RB ###########
+
+#############################################
+
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
 
 
-#read in data source table
+#############################################
+
+########### CITATIONS - TB ###########
+
+#############################################
+
 data_source <- read_csv(here("data","data_citations.csv"))
 
 data_source$`Source` <- paste0(
@@ -198,7 +218,13 @@ UI <- fluidPage(
   # Application title
   titlePanel("California Drought Explorer"),
   
+  #############################################
+  
   ########### DROUGHT INTRO - SL ###########
+  
+  #############################################
+  
+  
   tabsetPanel(
     id = "tabs",
     tabPanel("Background", 
@@ -222,11 +248,16 @@ UI <- fluidPage(
              tags$br(), # Add a line break
     ),
     
+    #############################################
+    
     ############ DROUGHT MAP - TB ############
+    
+    #############################################
+    
     tabPanel("Drought Map", 
              h3("How has the distribution of drought conditions changed over time?"),
              fluidRow(
-               column(6,
+               column(5,
                       p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
@@ -249,37 +280,52 @@ UI <- fluidPage(
              )
     ),
     
+    #############################################
+    
     ############ PCA - RB ############
+    
+    #############################################
+    
+    
     tabPanel("Principal Component Analysis", 
-             h3("Principle Component Analysis for Environmental Variables Related to Drought"),
-             p("Principle Component Analysis (PCA) is an unsupervised machine learning ordination method, 
-               or linear dimensionality reduciton. PCA projects a swarm of mutlidimentional data
-               onto a two dimentional plot with Principle Components (PC) on each axis chosen based on 
-               the direction of the data with the greatest variance. PCA is useful for multidimentional data exploration
-               and can tell us a lot about correlations between many variables within a dataset. 
-               
-               This PCA focuses on climate variables and their relatation to drought conditions within California Counties in 2021."
-             ),
-             
-             # Add checkbox group input for variable selection
-               column(3,
-                 checkboxGroupInput("pca_variables", 
-                                label = "Select (at least) Two Variables for PCA",
-                                choices = NULL)),
-             column(9,
-                    plotOutput("biplot", height = "500px", width = "90%"))
-             
-    ),
+             h3("Principal Component Analysis for Environmental Variables Related to Drought"),
+             fluidRow(
+               column(5,
+                      p(HTML("Principal Component Analysis (PCA) is an unsupervised machine learning ordination method, 
+                             or linear dimensionality reduction. PCA projects a swarm of multi-dimensional data
+                             onto a two dimensional plot with Principal Components (PC) on each axis chosen based on 
+                             the direction of the data with the greatest variance. PCA is useful for multidimentional data exploration
+                             and can tell us a lot about correlations between many variables within a dataset. 
+                             This PCA focuses on climate variables and their relatation to drought conditions within California Counties in 2021
+                             
+                             <br><br><b><span style='color: #E95420;'>To understand the relationships between each
+                             of these variables, select at least two variables using the checkboxes below</span></b><br><br>")),
+                      
+                      
+                      wellPanel(checkboxGroupInput("pca_variables",
+                                            label = "Climate Variables",
+                                            choices = NULL),
+                      )
+               ),
+               column(7,
+                      plotOutput("biplot", height = "500px", width = "90%")
+               ))),
+    #############################################
     
     ############ CLIMATE FACTORS - SL ############
+    
+    ##############################################
+    
     tabPanel("Climate Trends", 
              h3("Understanding Climate Trends for California Counties"),
              fluidRow(
-               column(4,
+               column(5,
                p(HTML("Climate factors such precipitation, temperature, and vapor pressure deficit play a major role in 
                determining drought conditions. Increased temperature and decreased precipitation can lead to more severe and prolonged droughts.
                Due to climate change, these factors have and will continue to experience significant change over time, impacting drought risk.
-               <b> To see how these factors have changed for individual counties in California, select a county and climate factor of interest .</b>")),
+               
+               <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b><br><br>")),
+               
                wellPanel(selectInput("county_cl",
                            label = "Select County",
                            choices = NULL),
@@ -288,34 +334,49 @@ UI <- fluidPage(
                            choices = NULL)
                          )
                ),
-               column(8,
+               column(7,
                       plotOutput("climate_plot", height = "500px", width = "90%")
                       ))),
     
-    ############ EJ - RB + TB ############
-    tabPanel("Environmental Justice",
+    #############################################
+    
+    ############ EJ - RB ############
+    
+    #############################################
+    
+    tabPanel("Environmental Justice", 
              h3("Health and Human Impacts Related to Drought"),
-             p("Water security, quality, wildfires, air quality, and other issues all can be caused or exastebated by drought.
-               Marginalized groups and those with the least resources often bear the brunt of impacts from drought."),
-             
-             selectInput("ej_variable",
-                         label = "Select EJ Factor",
-                         choices = NULL),
-             
              fluidRow(
-               column(5,  
+               column(5,
+                      p(HTML("Water security, quality, wildfires, air quality, and other issues all can be caused or exastebated by drought.
+               Marginalized groups and those with the least resources often bear the brunt of impacts from drought. Environmental justice issues
+               vary widely based on region and county size, however due to differences in population density and resources. Two counties that exemplify this 
+               difference would be Los Angeles, large urban city in Southern California, and El Dorado, small rural county in Northern California. 
+                             
+                             <br><br><b><span style='color: #E95420;'> To explore how different Environmental Justice metrics
+                             differ between the two counties, select your desired variable below </span></b><br><br>")),
+                      
+                      
+                      wellPanel(selectInput("ej_variable",
+                                                   label = "Select Environmental Justice Metric",
+                                                   choices = NULL)),
                       tableOutput("meta_data")
+                      
                ),
+               
                column(6,
                       offset = 1,
                       plotOutput("ej_box_plot", height = "500px", width = "90%"),
                       tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
-               )
-             )
-    ),
+                      
+               ))),
+    #############################################
     
-    ############ Data Citations - RB + TB ############ 
+    ############ Data Citations - TB ############ 
+    
+    #############################################
+    
     tabPanel("Data & References",
              h3("Data Sources"),
              p("The data used in this Shiny app was sourced from the following datasets:"),
@@ -331,6 +392,12 @@ UI <- fluidPage(
 
 # Define server logic
 SERVER <- function(input, output, session) {
+  
+  ############################
+  
+  ###### DROUGHT MAP - TB ############
+  
+  ############################
   
   # More drought server parameters
   selected_shp <- reactive({
@@ -429,9 +496,11 @@ SERVER <- function(input, output, session) {
       )
   })
   
-  ############
+  ############################
   
-  ### climate trends tab - sam 
+  ###### CLIMATE FACTORS - SL ############
+  
+  ############################
   
   observe({
     counties <- unique(climate_data$county)
@@ -483,10 +552,12 @@ SERVER <- function(input, output, session) {
         legend.text = element_text(size = 12) # Larger legend text
       )
   })
+  
+  ############################
 
-########
-
-# EJ tab
+  ###### ENVIRONMENTAL JUSTICE - RB ############
+  
+  ############################
 
 # Load the data reactively
 ces4_longer <- reactive({
@@ -540,10 +611,11 @@ output$meta_data <- renderTable({
   meta_data()
 })
 
+############################
 
-########
+###### PCA - RB ############
 
-### PCA tab
+############################
 
 # Load the data reactively
 joined_drought_data <- reactive({
@@ -596,10 +668,19 @@ output$biplot <- renderPlot({
            color = "USDM_index",
            loadings.label = TRUE,
            loadings.colour = "black",
-           loadings.label.colour = "black",) +
+           loadings.label.colour = "black",
+           loadings.label.size = 5) +
     scale_color_manual(values = color_palette) +
     theme_minimal() +
-    labs(title = "PCA of Selected Drought and Climate Conditions")
+    labs(title = "PCA of Selected Drought and Climate Conditions") +
+    theme(
+      axis.text.x = element_text(size = 14),  # Larger x-axis labels
+      axis.text.y = element_text(size = 14),  # Larger y-axis labels
+      axis.title.x = element_text(size = 16),  # Larger x-axis title
+      axis.title.y = element_text(size = 16),  # Larger y-axis title
+      plot.title = element_text(size = 18, hjust = 0.5),# Larger title
+      legend.position = "none") 
+    
 })
 
 ### Scree Plots ###
