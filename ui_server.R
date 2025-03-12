@@ -271,9 +271,9 @@ ui <- fluidPage(
                         leading to serious impacts on water supply, agriculture, and ecosystems. 
                         Recent droughts, such as the five-year drought from 2012 to 2016, have 
                         highlighted the urgent need for effective drought management 
-                        and climate adaptation strategies.
-                          
-                          <br><br><b><span> [RILEY INSERT CLIMATE INFO HERE] </span></b><br><br>")
+                        and climate adaptation strategies."),
+                        br(),
+                        p("RILEY INSERT CONTENT HERE")
                  ),
                  column(6,
                         tags$img(src = "dry_ranch.jpg", 
@@ -291,8 +291,35 @@ ui <- fluidPage(
                                  style = "width: 100%; height: 400px;")
                  ),
                  column(6,
-                        p("This Shiny app offers an interactive exploration of drought parameters 
-                          across California.")
+                        p("This Shiny App provides the opportunity to visualize spatial variations in drought severity, 
+                        understand patterns in drought parameters, and see how the unevenly 
+                          distributed impacts of drought effects."),
+                        br(),
+                        p("Each tab proides the following information"),
+                        br(),
+                        HTML("<strong>Background.</strong>"),  # HTML to make text bold
+                        br(),
+                        p("Introduction to drought and the climate variables used in the analysis with a guide to 
+                          understanding the organization of the Shiny App"),
+                        br(),
+                        HTML("<strong>Drought Map.</strong>"),  # HTML to make text bold
+                        br(),
+                        p("Interactive map of how drought indices have changed in California from 2000-2024"),
+                        br(),
+                        HTML("<strong>Principal Component Analysis.</strong>"),  # HTML to make text bold
+                        br(),
+                        p("Principal Component Analysis, a statistical analysis to understand how specific 
+                          variables are correlated with one another, to understand the relationships between 
+                          different climate variables "),
+                        br(),
+                        HTML("<strong>Climate Trends.</strong>"),  # HTML to make text bold
+                        br(),
+                        p("Line graphs of different climate variables over time for individual counties in California"),
+                        br(),
+                        HTML("<strong>Environmental Justice.</strong>"),  # HTML to make text bold
+                        br(),
+                        p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties"),
+                        
                  )
                )
       ),
