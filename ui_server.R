@@ -238,6 +238,22 @@ ui <- fluidPage(
         color: white !important;
       }
       
+      .regular-hover {
+    border-radius: 0px; /* Rounds the edges of the image */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+    }
+    
+    .regular-hover:hover {
+    transform: scale(1.015); /* Slightly enlarge the image */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow */
+    }
+    
+    .slider-animate-button {
+    font-size: 30px !important;  /* Increase text size */
+    padding: 10px 20px !important; /* Increase button size */
+    border-radius: 5px !important; /* Optional: Round the corners */
+    }
+      
     "))
   ),
   
@@ -258,32 +274,39 @@ ui <- fluidPage(
                tags$img(src = "lake_oroville_drought.jpg", 
                         alt = "Image of Lake Oroville Dam with the Treeline High Above the Water Level Illustrating Losses from Evaporation and Use", 
                         style = "width: 100%; height: 400px;"),
-               tags$figcaption("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger."),
+               tags$figcaption(tags$i("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger.")),
                
                # First row: text panel on the left, image on the right
                fluidRow(
                  column(6,
                         h3("Understanding Drought Risk in California"),
-                        p("With its dry Mediterranean climate across most counties, California is particularly 
-                          vulnerable to drought, which has become more frequent and severe due to the effects of 
-                          climate change. While droughts are a natural part of the climate system, their intensity 
-                          and duration are exacerbated by rising temperatures and shifting precipitation patterns, 
-                          leading to far-reaching impacts on water supply, agriculture, and ecosystems. 
-                          Prolonged and intense drought conditions can cause extensive crop loss and reductions 
-                          in water availability that negatively impact agricultural economics and livelihoods. 
-                          Drought also plays a key role in wildfire by reducing fuel moisture and increasing risk of 
-                          catastrophic wildfire in fire-prone landscapes. Recent severe droughts, such as the five-year 
-                          drought from 2012 to 2016, have highlighted the urgent need for effective drought management 
-                          and climate adaptation strategies."),
+                        p("With its dry Mediterranean climate, California is particularly vulnerable to drought, 
+                        which has become more frequent and severe as a result of climate change. 
+                        Although droughts are a natural part of the climate system, 
+                        their intensity and duration have been amplified by rising temperatures and 
+                        shifting precipitation patterns. These changes have far-reaching effects on water supply, 
+                        agriculture, and ecosystems. Prolonged droughts can lead to significant crop losses, 
+                        reduced water availability, and negative impacts on agricultural economies and livelihoods. 
+                        Additionally, drought contributes to increased wildfire risk by reducing fuel moisture, 
+                        which makes landscapes more susceptible to catastrophic fires. Recent extreme droughts, 
+                        such as the five-year period from 2012 to 2016, underscore the urgent need for effective 
+                        drought management and climate adaptation strategies."),
                         br(),
-                        p("RILEY INSERT CONTENT HERE")
+                        p("Effective drought management at the statewide level requires comprehensive monitoring to 
+                          guide timely and appropriate intervention strategies. State and federal agencies, including 
+                          the California Department of Water Resources, USDA, NOAA, and the National Integrated Drought 
+                          Information System, play key roles in monitoring and forecasting drought conditions, developing 
+                          water management plans, and supporting affected communities."),
+                        br(),
+                        p("Drought dynamics are often informed by the following environmental variables: RILEY INSERT CONTENT HERE")
                  ),
                  column(6,
-                        tags$img(src = "dry_ranch.jpg", 
-                                 alt = "A Dry Ranch with Cracked Soil in Fresno California During a Drought Event in 2014", 
+                        tags$img(src = "almond_drought.jpg", 
+                                 alt = "An abandoned almond orchard in Newman, California impacted by drought", 
+                                 class = "regular-hover",
                                  style = "width: 100%; height: 400px;"),
-                        tags$figcaption("Fresno Ranch During Drought Event in 2014, U.S. Department of Agriculture Cynthia Mendoza/Videographer/USDA photo by Cynthia Mendoza, Public domain, via Wikimedia Commons.")
-                 )
+                        tags$figcaption(tags$i("Abandoned drought-stricken almond orchard in Newman, California. Photo by Terry Chea, AP."))
+               )
                ),
                
                br(),  # This will add space between rows
@@ -294,30 +317,32 @@ ui <- fluidPage(
                fluidRow(
                  column(6,
                         tags$img(src = "IMG_1982.jpeg", 
-                                 alt = "Photo of Hillside on Fire During a Controlled Burn", 
+                                 alt = "Photo of Fire on Hillside During a Prescribed Burn", 
+                                 class = "regular-hover",
                                  style = "width: 100%; height: 400px;"),
-                        tags$figcaption("Controlled Burning at the Sedgwick Reserve in Santa Barbara County, California.
-                                        Photo Taken by Thuy-Tien Bui")
+                        tags$figcaption(tags$i("Prescribed Fire for Managing Fuels and Wildfire Risk at Sedgwick Reserve in Santa Ynez, California.
+                                        Photo by Thuy-Tien Bui."))
                  ),
                  column(6,
                         h3("Navigating the Website"),
-                        p("This Shiny App provides the opportunity to visualize spatial variations in drought severity, 
-                        understand patterns in drought parameters, and see the uneven distribution of drought impacts.
-                          Each tab proides the following:"),
-                        HTML("<strong>Background.</strong>"),  # HTML to make text bold
+                        p("This Shiny App offers an interactive platform to visualize spatial variations in drought severity, analyze patterns in drought parameters, 
+                        and explore the distribution of drought-related environmental justice impacts across different counties.
+
+                          Each tab provides the following:"),
+                        HTML("<strong>Background</strong>"),  # HTML to make text bold
                         p("Introduction to the project, explantion of the importance of understanding drought and its
-                          predictors in California, guide for navigating the website"),
-                        HTML("<strong>Drought Map.</strong>"),  # HTML to make text bold
+                          predictors in California, guide for navigating the website."),
+                        HTML("<strong>Drought Map</strong>"),  # HTML to make text bold
                         p("Interactive map of changes in drought severity throughout California 
-                          between 2000 and 2024"),
-                        HTML("<strong>Principal Component Analysis.</strong>"),  # HTML to make text bold
+                          between 2000 and 2024."),
+                        HTML("<strong>Principal Component Analysis</strong>"),  # HTML to make text bold
                         p("Biplot produced by a Principal Component Analysis (a statistical analysis to understand how specific 
                           variables are correlated with one another) to understand the relationships between 
-                          different climate variables and drought for California counties"),
-                        HTML("<strong>Climate Trends.</strong>"),  # HTML to make text bold
-                        p("Line graphs of different climate variables over time for California counties"),
-                        HTML("<strong>Environmental Justice.</strong>"),  # HTML to make text bold
-                        p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties"),
+                          different climate variables and drought for California counties."),
+                        HTML("<strong>Climate Trends</strong>"),  # HTML to make text bold
+                        p("Line graphs of different climate variables over time for California counties."),
+                        HTML("<strong>Environmental Justice</strong>"),  # HTML to make text bold
+                        p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties.")
                         
                  )
                )
