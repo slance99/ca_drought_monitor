@@ -271,7 +271,9 @@ ui <- fluidPage(
                         leading to serious impacts on water supply, agriculture, and ecosystems. 
                         Recent droughts, such as the five-year drought from 2012 to 2016, have 
                         highlighted the urgent need for effective drought management 
-                        and climate adaptation strategies.")
+                        and climate adaptation strategies.
+                          
+                          <br><br><b><span> [RILEY INSERT CLIMATE INFO HERE] </span></b><br><br>")
                  ),
                  column(6,
                         tags$img(src = "dry_ranch.jpg", 
@@ -289,7 +291,8 @@ ui <- fluidPage(
                                  style = "width: 100%; height: 400px;")
                  ),
                  column(6,
-                        p("This Shiny app offers an interactive exploration of drought parameters across California.")
+                        p("This Shiny app offers an interactive exploration of drought parameters 
+                          across California.")
                  )
                )
       ),
