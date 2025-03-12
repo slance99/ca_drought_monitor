@@ -1,4 +1,4 @@
-county,Average Burned Area (acres),Average Fires Per Year (#),Total Acres Burned (acres),Total Number of Fires (#),USDM_index,date,Elevation (m),Total Precipitation (mm),Minimum Temperature C,Average Temperature C,Maximum Temperature C,Minimum Vapor Pressure Deficit (hPa),Maximum Vapor Pressure Deficit (hPa),Drought Index
+county,Average Acres Burned,Average Fires Per Year,Total Acres Burned,Total Number of Fires,USDM_index,date,Elevation (m),Total Precipitation (mm),Minimum Temperature C,Average Temperature C,Maximum Temperature C,Minimum Vapor Pressure Deficit (hPa),Maximum Vapor Pressure Deficit (hPa),Drought Index
 Amador,43.411942133333326,3,130.23582639999998,3,D4,2021,763,980.12,9.8,15.8,21.7,4.89,21.5,4
 Calaveras,402.1581955,2,804.3163910000001,2,D4,2021,484,772.12,8.7,16.2,23.6,3.51,25.02,4
 El Dorado,30.09556785,6,180.5734071,6,D2,2021,1213,1350.66,9.1,14.7,20.3,5.17,20.51,2
