@@ -93,7 +93,7 @@ data_source <- data_source[, !names(data_source) %in% "Link"]
 ############################################################################
 ############################################################################
 
-UI <- fluidPage(
+ui <- fluidPage(
   theme = shinytheme("united"),
   
   tags$head(
@@ -237,10 +237,10 @@ UI <- fluidPage(
         background-color: #E95420 !important;
         color: white !important;
       }
+      
     "))
   ),
-
-  # Application title
+  
   titlePanel("California Drought Explorer"),
   
   #############################################
@@ -248,175 +248,181 @@ UI <- fluidPage(
   ########### DROUGHT INTRO - SL ###########
   
   #############################################
-  
-  
-  tabsetPanel(
-    id = "tabs",
-    tabPanel("Background", 
-             h3("Understanding Drought Risk in California"),
-             tags$img(src = "lake_oroville_drought.jpg", alt = "Sample Image", style = "width: 100%; height: 400;"),
-             p("AP Photo/Noah Berger"),
-             
-             tags$br(), # Add a line break
-             
-             
-             p("With its dry Mediterranean climate, California is particularly vulnerable to drought, which has become more frequent and severe due to the effects of climate change. 
-               While droughts are a natural part of the climate system, their intensity and duration are exacerbated by rising temperatures and shifting precipitation patterns, leading to serious impacts on water supply, agriculture, and ecosystems. 
-               Recent droughts, such as the five-year drought from 2012 to 2016, have highlighted the urgent need for effective drought management and climate adaptation strategies."),
-             
-             tags$br(), # Add a line break
-             
-             p("This Shiny app offers an interactive exploration of drought parameters across California, with a particular focus on the environmental justice implications in Los Angeles and El Dorado County. 
-               Through visualizations of climate trends, a principal component analysis of climate variables, and an environmental justice analysis, the app demonstrates the vital role of monitoring drought conditions in managing risk and supporting vulnerable communities. 
-               Use the tabs above to navigate through the different sections of the app."),
-             
-             tags$br(), # Add a line break
-    ),
     
-    #############################################
-    
-    ############ DROUGHT MAP - TB ############
-    
-    #############################################
-    
-    tabPanel("Drought Map", 
-             h3("How has the distribution of drought conditions changed over time?"),
-             fluidRow(
-               column(5,
-                      p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
+    tabsetPanel(
+      id = "tabs",
+      
+      # Background Tab
+      tabPanel("Background",
+               # Top full-width image
+               tags$img(src = "lake_oroville_drought.jpg", 
+                        alt = "Image of Lake Oroville Dam with the Treeline High Above the Water Level Illustrating Losses from Evaporation and Use", 
+                        style = "width: 100%; height: 400px;"),
+               tags$figcaption("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger."),
+               
+               # First row: text panel on the left, image on the right
+               fluidRow(
+                 column(6,
+                        h3("Understanding Drought Risk in California"),
+                        p("With its dry Mediterranean climate, California is particularly vulnerable to drought, 
+                        which has become more frequent and severe due to the effects of climate change. 
+                        While droughts are a natural part of the climate system, their intensity and 
+                        duration are exacerbated by rising temperatures and shifting precipitation patterns, 
+                        leading to serious impacts on water supply, agriculture, and ecosystems. 
+                        Recent droughts, such as the five-year drought from 2012 to 2016, have 
+                        highlighted the urgent need for effective drought management 
+                        and climate adaptation strategies.")
+                 ),
+                 column(6,
+                        tags$img(src = "dry_ranch.jpg", 
+                                 alt = "A Dry Ranch with Cracked Soil in Fresno California During a Drought Event in 2014", 
+                                 style = "width: 100%; height: 400px;"),
+                        tags$figcaption("Fresno Ranch During Drought Event in 2014, U.S. Department of Agriculture Cynthia Mendoza/Videographer/USDA photo by Cynthia Mendoza, Public domain, via Wikimedia Commons.")
+                 )
+               ),
+               
+               # Second row: image on the left, text panel on the right
+               fluidRow(
+                 column(6,
+                        tags$img(src = "another_image.jpg", 
+                                 alt = "Additional Image", 
+                                 style = "width: 100%; height: 400px;")
+                 ),
+                 column(6,
+                        p("This Shiny app offers an interactive exploration of drought parameters across California.")
+                 )
+               )
+      ),
+      
+      #############################################
+      
+      # DROUGHT MAP Tab
+      tabPanel("Drought Map", 
+               h3("How has the distribution of drought conditions changed over time?"),
+               fluidRow(
+                 column(5,
+                        p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
                            <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b><br><br>")),
-                      sliderInput("year", "Select Year:",
-                                  min = min(shp_data$year), 
-                                  max = max(shp_data$year), 
-                                  value = min(shp_data$year), 
-                                  step = 1,
-                                  sep = "",
-                                  width = "100%",
-                                  animate = animationOptions(interval = 1500, loop = TRUE)),
-                      h4("Drought Index Categories"),
-                      DTOutput("drought_table")
-               ),
-               column(6, 
-                      leafletOutput("map", height = "100vh")
+                        sliderInput("year", "Select Year:",
+                                    min = min(shp_data$year), 
+                                    max = max(shp_data$year), 
+                                    value = min(shp_data$year), 
+                                    step = 1,
+                                    sep = "",
+                                    width = "100%",
+                                    animate = animationOptions(interval = 1500, loop = TRUE)),
+                        h4("Drought Index Categories"),
+                        DTOutput("drought_table")
+                 ),
+                 column(6, 
+                        leafletOutput("map", height = "100vh")
+                 )
                )
-             )
-    ),
-    
-    #############################################
-    
-    ############ PCA - RB ############
-    
-    #############################################
-    
-    
-    tabPanel("Principal Component Analysis", 
-             h3("Principal Component Analysis for Environmental Variables Related to Drought"),
-             fluidRow(
-               column(5,
-                      p(HTML("Principal Component Analysis (PCA) is an unsupervised machine learning ordination method, 
+      ),
+      
+      #############################################
+      
+      # Principal Component Analysis (PCA) Tab
+      tabPanel("Principal Component Analysis", 
+               h3("Principal Component Analysis for Environmental Variables Related to Drought"),
+               fluidRow(
+                 column(5,
+                        p(HTML("Principal Component Analysis (PCA) is an unsupervised machine learning ordination method, 
                              or linear dimensionality reduction. PCA projects a swarm of multi-dimensional data
                              onto a two dimensional plot with Principal Components (PC) on each axis chosen based on 
-                             the direction of the data with the greatest variance. PCA is useful for multidimentional data exploration
+                             the direction of the data with the greatest variance. PCA is useful for multidimensional data exploration
                              and can tell us a lot about correlations between many variables within a dataset. 
-                             This PCA focuses on climate variables and their relatation to drought conditions within California Counties in 2021
+                             This PCA focuses on climate variables and their relationship to drought conditions within California Counties in 2021
                              
                              <br><br><b><span style='color: #E95420;'>To understand the relationships between each
                              of these variables, select at least two variables using the checkboxes below</span></b><br><br>")),
-                      
-                      
-                      wellPanel(checkboxGroupInput("pca_variables",
-                                            label = "Climate Variables",
-                                            choices = NULL),
-                      )
-               ),
-               column(7,
-                      plotOutput("biplot", height = "500px", width = "90%")
-               ))),
-    #############################################
-    
-    ############ CLIMATE FACTORS - SL ############
-    
-    ##############################################
-    
-    tabPanel("Climate Trends", 
-             h3("Understanding Climate Trends for California Counties"),
-             fluidRow(
-               column(5,
-               p(HTML("Climate factors such precipitation, temperature, and vapor pressure deficit play a major role in 
-               determining drought conditions. Increased temperature and decreased precipitation can lead to more severe and prolonged droughts.
-               Due to climate change, these factors have and will continue to experience significant change over time, impacting drought risk.
-               
-               <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b><br><br>")),
-               
-               wellPanel(selectInput("county_cl",
-                           label = "Select County",
-                           choices = NULL),
-                         selectInput("climate_factor",
-                           label = "Select Climate Variable",
-                           choices = NULL)
-                         )
-               ),
-               column(7,
-                      plotOutput("climate_plot", height = "500px", width = "90%")
-                      ))),
-    
-    #############################################
-    
-    ############ EJ - RB ############
-    
-    #############################################
-    
-    tabPanel("Environmental Justice", 
-             h3("Health and Human Impacts Related to Drought"),
-             fluidRow(
-               column(5,
-                      p(HTML("Water security, quality, wildfires, air quality, and other issues all can be caused or exastebated by drought.
-               Marginalized groups and those with the least resources often bear the brunt of impacts from drought. Environmental justice issues
-               vary widely based on region and county size, however due to differences in population density and resources. Two counties that exemplify this 
-               difference would be Los Angeles, large urban city in Southern California, and El Dorado, small rural county in Northern California. 
+                        
+                        wellPanel(checkboxGroupInput("pca_variables",
+                                                     label = "Climate Variables",
+                                                     choices = NULL)
+                        )
+                 ),
+                 column(7,
+                        plotOutput("biplot", height = "500px", width = "90%")
+                 )
+               )
+      ),
+      
+      #############################################
+      
+      # Climate Factors Tab
+      tabPanel("Climate Trends", 
+               h3("Understanding Climate Trends for California Counties"),
+               fluidRow(
+                 column(5,
+                        p(HTML("Climate factors such as precipitation, temperature, and vapor pressure deficit play a major role in 
+                             determining drought conditions. Increased temperature and decreased precipitation can lead to more severe and prolonged droughts.
+                             Due to climate change, these factors have and will continue to experience significant changes over time, impacting drought risk.
+                             
+                             <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b><br><br>")),
+                        wellPanel(selectInput("county_cl",
+                                              label = "Select County",
+                                              choices = NULL),
+                                  selectInput("climate_factor",
+                                              label = "Select Climate Variable",
+                                              choices = NULL)
+                        )
+                 ),
+                 column(7,
+                        plotOutput("climate_plot", height = "500px", width = "90%")
+                 )
+               )
+      ),
+      
+      #############################################
+      
+      # Environmental Justice Tab
+      tabPanel("Environmental Justice", 
+               h3("Health and Human Impacts Related to Drought"),
+               fluidRow(
+                 column(5,
+                        p(HTML("Water security, quality, wildfires, air quality, and other issues can all be caused or exacerbated by drought.
+                             Marginalized groups and those with the least resources often bear the brunt of impacts from drought. Environmental justice issues
+                             vary widely based on region and county size, however, due to differences in population density and resources. Two counties that exemplify this 
+                             difference would be Los Angeles, a large urban city in Southern California, and El Dorado, a small rural county in Northern California. 
                              
                              <br><br><b><span style='color: #E95420;'> To explore how different Environmental Justice metrics
                              differ between the two counties, select your desired variable below </span></b><br><br>")),
-                      
-                      
-                      wellPanel(selectInput("ej_variable",
-                                                   label = "Select Environmental Justice Metric",
-                                                   choices = NULL)),
-                      tableOutput("meta_data")
-                      
-               ),
-               
-               column(6,
-                      offset = 1,
-                      plotOutput("ej_box_plot", height = "500px", width = "90%"),
-                      tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
+                        
+                        wellPanel(selectInput("ej_variable",
+                                              label = "Select Environmental Justice Metric",
+                                              choices = NULL)),
+                        tableOutput("meta_data")
+                 ),
+                 column(6,
+                        offset = 1,
+                        plotOutput("ej_box_plot", height = "500px", width = "90%"),
+                        tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
-                      
-               ))),
-    #############################################
-    
-    ############ Data Citations - TB ############ 
-    
-    #############################################
-    
-    tabPanel("Data & References",
-             h3("Data Sources"),
-             p("The data used in this Shiny app was sourced from the following datasets:"),
-             DTOutput("data_source")
+                 )
+               )
+      ),
+      
+      #############################################
+      
+      # Data & References Tab
+      tabPanel("Data & References",
+               h3("Data Sources"),
+               p("The data used in this Shiny app was sourced from the following datasets:"),
+               DTOutput("data_source")
+      )
     )
   )
-)
-
 
 ############################################################################
 ############################################################################
 ############################################################################
 
 # Define server logic
-SERVER <- function(input, output, session) {
+server <- function(input, output, session) {
   
   ############################
   
@@ -618,7 +624,7 @@ output$ej_box_plot <- renderPlot({
     theme_minimal() +
     labs(x = "County", 
          y = paste(input$ej_variable), 
-         title = paste("Differences in", input$ej_variable, "Between El Dorado and Los Angeles Counties")) +
+         title = paste("Differences in", input$ej_variable, "\nBetween El Dorado and Los Angeles Counties")) +
     scale_fill_manual(values = c("grey", "#E95420")) +  
     theme(
       axis.text.x = element_text(hjust = 1, size = 14),  # Larger x-axis labels
@@ -628,7 +634,7 @@ output$ej_box_plot <- renderPlot({
       plot.title = element_text(size = 16, hjust = 0.5),  # Larger title
       legend.position = "none",
       legend.text = element_text(size = 12) # Larger legend text
-    )
+    ) 
 })
 
 # Render the table
@@ -749,5 +755,6 @@ output$data_source <- renderDT({
 
 }
 
-shinyApp(ui = UI, server = SERVER)
+shinyApp(ui = ui, server = server)
+
 
