@@ -264,14 +264,17 @@ ui <- fluidPage(
                fluidRow(
                  column(6,
                         h3("Understanding Drought Risk in California"),
-                        p("With its dry Mediterranean climate, California is particularly vulnerable to drought, 
-                        which has become more frequent and severe due to the effects of climate change. 
-                        While droughts are a natural part of the climate system, their intensity and 
-                        duration are exacerbated by rising temperatures and shifting precipitation patterns, 
-                        leading to serious impacts on water supply, agriculture, and ecosystems. 
-                        Recent droughts, such as the five-year drought from 2012 to 2016, have 
-                        highlighted the urgent need for effective drought management 
-                        and climate adaptation strategies."),
+                        p("With its dry Mediterranean climate across most counties, California is particularly 
+                          vulnerable to drought, which has become more frequent and severe due to the effects of 
+                          climate change. While droughts are a natural part of the climate system, their intensity 
+                          and duration are exacerbated by rising temperatures and shifting precipitation patterns, 
+                          leading to far-reaching impacts on water supply, agriculture, and ecosystems. 
+                          Prolonged and intense drought conditions can cause extensive crop loss and reductions 
+                          in water availability that negatively impact agricultural economics and livelihoods. 
+                          Drought also plays a key role in wildfire by reducing fuel moisture and increasing risk of 
+                          catastrophic wildfire in fire-prone landscapes. Recent severe droughts, such as the five-year 
+                          drought from 2012 to 2016, have highlighted the urgent need for effective drought management 
+                          and climate adaptation strategies."),
                         br(),
                         p("RILEY INSERT CONTENT HERE")
                  ),
@@ -283,41 +286,37 @@ ui <- fluidPage(
                  )
                ),
                
+               br(),  # This will add space between rows
+               br(),  # This will add space between rows
+               br(),  # This will add space between rows
+               
                # Second row: image on the left, text panel on the right
                fluidRow(
                  column(6,
-                        tags$img(src = "another_image.jpg", 
-                                 alt = "Additional Image", 
-                                 style = "width: 100%; height: 400px;")
+                        tags$img(src = "IMG_1982.jpeg", 
+                                 alt = "Photo of Hillside on Fire During a Controlled Burn", 
+                                 style = "width: 100%; height: 400px;"),
+                        tags$figcaption("Controlled Burning at the Sedgwick Reserve in Santa Barbara County, California.
+                                        Photo Taken by Thuy-Tien Bui")
                  ),
                  column(6,
+                        h3("Navigating the Website"),
                         p("This Shiny App provides the opportunity to visualize spatial variations in drought severity, 
-                        understand patterns in drought parameters, and see how the unevenly 
-                          distributed impacts of drought effects."),
-                        br(),
-                        p("Each tab proides the following information"),
-                        br(),
+                        understand patterns in drought parameters, and see the uneven distribution of drought impacts.
+                          Each tab proides the following:"),
                         HTML("<strong>Background.</strong>"),  # HTML to make text bold
-                        br(),
-                        p("Introduction to drought and the climate variables used in the analysis with a guide to 
-                          understanding the organization of the Shiny App"),
-                        br(),
+                        p("Introduction to the project, explantion of the importance of understanding drought and its
+                          predictors in California, guide for navigating the website"),
                         HTML("<strong>Drought Map.</strong>"),  # HTML to make text bold
-                        br(),
-                        p("Interactive map of how drought indices have changed in California from 2000-2024"),
-                        br(),
+                        p("Interactive map of changes in drought severity throughout California 
+                          between 2000 and 2024"),
                         HTML("<strong>Principal Component Analysis.</strong>"),  # HTML to make text bold
-                        br(),
-                        p("Principal Component Analysis, a statistical analysis to understand how specific 
-                          variables are correlated with one another, to understand the relationships between 
-                          different climate variables "),
-                        br(),
+                        p("Biplot produced by a Principal Component Analysis (a statistical analysis to understand how specific 
+                          variables are correlated with one another) to understand the relationships between 
+                          different climate variables and drought for California counties"),
                         HTML("<strong>Climate Trends.</strong>"),  # HTML to make text bold
-                        br(),
-                        p("Line graphs of different climate variables over time for individual counties in California"),
-                        br(),
+                        p("Line graphs of different climate variables over time for California counties"),
                         HTML("<strong>Environmental Justice.</strong>"),  # HTML to make text bold
-                        br(),
                         p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties"),
                         
                  )
@@ -328,7 +327,7 @@ ui <- fluidPage(
       
       # DROUGHT MAP Tab
       tabPanel("Drought Map", 
-               h3("How has the distribution of drought conditions changed over time?"),
+               h3("Map of Drought Conditions from 2000 to 2024"),
                fluidRow(
                  column(5,
                         p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
@@ -441,8 +440,19 @@ ui <- fluidPage(
       # Data & References Tab
       tabPanel("Data & References",
                h3("Data Sources"),
-               p("The data used in this Shiny app was sourced from the following datasets:"),
-               DTOutput("data_source")
+               fluidRow(
+                 p("The data used in this Shiny app was sourced from the following datasets:"),
+                        DTOutput("data_source")),
+               br(),
+               br(),
+               fluidRow(
+                 h3("Acknowledgements and Attributions"),
+                 p("This website was created as a part of ESM 244 - Advanced Data Analysis at the Bren
+                   School at UCSB taught by Nathan Grimes"),
+                 p("Thuy-Tien Bui, Riley Black, and Sam Lance created the site collaboratively, each creating
+                   their own tab. Thuy-Tien created the Drought Map and created + executed the theming of the site, 
+                   Riley Black created the PCA and EJ tabs, and Sam Lance created the Climate Trends and Background tabs.")
+               )
       )
     )
   )
