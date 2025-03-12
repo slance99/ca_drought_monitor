@@ -335,7 +335,7 @@ ui <- fluidPage(
                              onto a two dimensional plot with Principal Components (PC) on each axis chosen based on 
                              the direction of the data with the greatest variance. PCA is useful for multidimensional data exploration
                              and can tell us a lot about correlations between many variables within a dataset. 
-                             This PCA focuses on climate variables and their relationship to drought conditions within California Counties in 2021
+                             This PCA focuses on climate variables and their relationship to drought conditions within California Counties in 2021.
                              
                              <br><br><b><span style='color: #E95420;'>To understand the relationships between each
                              of these variables, select at least two variables using the checkboxes below</span></b><br><br>")),
@@ -661,6 +661,9 @@ observe({
   # Get only numeric columns
   numeric_columns <- colnames(data)[sapply(data, is.numeric)]
   
+  # Select variables to start
+  # selected_columns <- c("column1", "column3", "column5")
+  
   # Update the checkbox choices to include only numeric columns
   updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = numeric_columns)
 })
@@ -713,31 +716,6 @@ output$biplot <- renderPlot({
       legend.position = "none") 
     
 })
-
-### Scree Plots ###
-
-# Create a dataframe with the necessary ingredients to make a scree plot
-# output$screeplot <- renderPlot({
-#   req(joined_drought_pca())  # Ensure PCA is ready
-#   pca_result <- joined_drought_pca()  # Get PCA result
-#   
-#   pc_names <- colnames(pca_result$rotation)
-#   sd_vec <- pca_result$sdev
-#   var_vec <- sd_vec^2  # sd = variance^2
-#   
-#   pct_expl_df <- data.frame(v = var_vec,
-#                             pct_v = var_vec / sum(var_vec),
-#                             pc = pc_names)
-  
-#   # Screeplot
-#   ggplot(pct_expl_df, aes(x = fct_reorder(pc, v, .desc = TRUE), y = v)) +
-#     geom_col(fill = "steelblue") +
-#     geom_text(aes(label = scales::percent(round(pct_v, 3))), vjust = 0, nudge_y = .5, angle = 90) +
-#     labs(title = "Scree Plot of Principle Components", x = 'Principal component', y = 'Variance explained') +
-#     theme_bw() +
-#     theme(axis.text = element_text(size = 10)) +
-#     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# })
 
 output$data_source <- renderDT({
   datatable(data_source, 
