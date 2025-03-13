@@ -217,6 +217,13 @@ ui <- fluidPage(
         margin-right: 10px;  /* Optional: space to the right of the paragraphs */
       }
       
+      h4 {
+        font-size: 18px;  /* Adjust font size for all headers */
+        margin-top: 0px;  /* Optional: space above the headers */
+        margin-left: 10px;  /* Optional: space to the left of the headers */
+        margin-right: 10px;  /* Optional: space to the right of the headers */
+      }
+      
       h2 {margin-top: 20px;
       margin-left: 10px;
       }
@@ -281,23 +288,16 @@ ui <- fluidPage(
                           the California Department of Water Resources, USDA, NOAA, and the National Integrated Drought 
                           Information System, play key roles in monitoring and forecasting drought conditions, developing 
                           water management plans, and supporting affected communities."),
-                        br(),
-                        p("Drought dynamics are often informed by the following environmental variables: RILEY INSERT CONTENT HERE")
                  ),
                  column(6,
                         br(),
-                        tags$img(src = "almond_drought.jpg", 
+                        tags$img(src = "almond_drought.jpeg", 
                                  alt = "An abandoned almond orchard in Newman, California impacted by drought", 
                                  class = "regular-hover",
                                  style = "width: 100%; height: 450px;"),
                         tags$figcaption(tags$i("Abandoned drought-stricken almond orchard in Newman, California. Photo by Terry Chea, AP."))
                )
                ),
-               
-               br(),  # This will add space between rows
-               br(),  # This will add space between rows
-               br(),  # This will add space between rows
-               
                # Second row: image on the left, text panel on the right
                fluidRow(
                  column(6,
@@ -308,14 +308,21 @@ ui <- fluidPage(
                                  style = "width: 100%; height: 525px;"),
                         tags$figcaption(tags$i("Prescribed Fire for Managing Fuels and Wildfire Risk at Sedgwick Reserve in Santa Ynez, California.
                                         Photo by Thuy-Tien Bui.")),
-                 )
-                        ,
+                 ),
                  column(6,
-                        h3("Navigating the Website"),
+                        h3("Climate and Drought"),
+                        p("Drought dynamics are often informed by the following environmental variables: RILEY INSERT CONTENT HERE")
+                 )
+               ),
+               
+              # Third Row, image on right, text panel on left
+               fluidRow(
+                 column(6,
+                        h3("Navigating the App"),
                         p("This Shiny App offers an interactive platform to visualize spatial variations in drought severity, analyze patterns in drought parameters, 
                         and explore the distribution of drought-related environmental justice impacts across different counties.
 
-                          Each tab provides the following:"),
+                          Tabs provide the following:"),
                         HTML('<div style="margin-left: 10px"><strong>Background</strong></div>'),  # HTML to make text bold
                         p("Introduction to the project, explantion of the importance of understanding drought and its
                           predictors in California, guide for navigating the website."),
@@ -330,7 +337,14 @@ ui <- fluidPage(
                         p("Line graphs of different climate variables over time for California counties."),
                         HTML('<div style="margin-left: 10px"><strong>Environmental Justice</strong></div>'),  # HTML to make text bold
                         p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties.")
-                        
+                 ),
+                 column(6,
+                        br(),
+                        tags$img(src = "rancher.jpg", 
+                                 alt = "Rancher walking on dried lakebed", 
+                                 class = "regular-hover",
+                                 style = "width: 100%; height: 525px;"),
+                        tags$figcaption(tags$i("Rancher walking on dried lakebed in Cambria, California. Photo by Al Seib, LA Times")),
                  )
                ),
                p(em("Developed by Riley Black, Thuy-Tien Bui, and Sam Lance"), style="margin-right: 0px; margin-left: 0px; margin-bottom: 0px; margin-top: 0px;text-align:justify;background-color:#FBDDD2;padding:10px;border-radius:0px"),
@@ -343,7 +357,7 @@ ui <- fluidPage(
                h3("Map of Drought Conditions from 2000 to 2024"),
                fluidRow(class = "full-height-row",
                  column(5,
-                        p(class = "custom-html-text", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
+                        p(class = "custom-html-text", style = "margin-left: 0px;", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
@@ -356,7 +370,7 @@ ui <- fluidPage(
                                     sep = "",
                                     width = "100%",
                                     animate = animationOptions(interval = 1500, loop = TRUE)),
-                        h4("Drought Index Categories"),
+                        h4(style = "margin-left: 0px;","Drought Index Categories"),
                         DTOutput("drought_table")
                  ),
                  column(6, class = "full-height-column",
@@ -845,14 +859,17 @@ output$biplot <- renderPlot({
            size = 3) +
     scale_color_manual(values = color_palette) +
     theme_minimal() +
-    labs(title = "PCA Biplot of Selected Drought and Climate Factors") +
+    labs(title = "PCA Biplot of Selected Drought and Climate Factors", color = "Drought Index") +
     theme(
       axis.text.x = element_text(size = 14),  # Larger x-axis labels
       axis.text.y = element_text(size = 14),  # Larger y-axis labels
       axis.title.x = element_text(size = 16),  # Larger x-axis title
       axis.title.y = element_text(size = 16),  # Larger y-axis title
       plot.title = element_text(size = 18, hjust = 0.5),# Larger title
-      legend.position = "none") 
+      legend.position = "top",
+      legend.title = element_text(size = 14),
+      legend.text = element_text(size = 14)
+    )
     
 })
 
