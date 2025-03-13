@@ -12,6 +12,7 @@ library(DT)
 library(viridis)
 library(shinythemes)
 library(ggfortify)
+library(bslib)
 
 ############################################################################
 ############################################################################
@@ -72,7 +73,7 @@ climate_data <- climate_data |>
 #############################################
 
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
-
+meta_data <- read_csv(here("data","meta_data.csv"))
 
 #############################################
 
@@ -94,10 +95,34 @@ data_source <- data_source[, !names(data_source) %in% "Link"]
 ############################################################################
 
 ui <- fluidPage(
-  theme = shinytheme("united"),
+  theme = bs_theme(bootswatch = "united"),
   
   tags$head(
     tags$style(HTML("
+      
+      /* Style the checkbox border to orange */
+      .checkbox input[type='checkbox'] {
+        border: 2px solid #E95420 !important; /* Orange border */
+        background-color: #fff !important;  /* White background */
+      }
+
+      /* Style the checkbox when checked */
+      .checkbox input[type='checkbox']:checked {
+        background-color: #E95420 !important; /* Orange background when checked */
+        border-color: #E95420 !important;    /* Orange border when checked */
+        color: white !important;             /* White checkmark */
+      }
+
+      /* Style the checkbox border on hover */
+      .checkbox input[type='checkbox']:hover {
+        border-color: #E95420 !important;    /* Orange border on hover */
+      }
+
+      /* Optional: styling for focus (when the checkbox is focused) */
+      .checkbox input[type='checkbox']:focus {
+        outline: none !important;           /* Remove default outline */
+        border-color: #E95420 !important;  /* Orange border on focus */
+      }
 
       .irs-bar {
         background: #E95420 !important;
@@ -109,7 +134,6 @@ ui <- fluidPage(
         background: #E95420 !important;
         border: 1px solid #D43F00 !important;
       }
-      
       
        /* Style for the play button */
       .irs-slider-animate-btn {
@@ -135,109 +159,8 @@ ui <- fluidPage(
         color: white !important;
         border: 1px solid #D43F00 !important;
       }
-
-      /* Style for the checkbox input itself */
-      div.shiny-input-checkbox-group input[type='checkbox'] {
-        border: 2px solid #E95420 !important;  /* Orange border */
-        background-color: #fff !important;     /* Default white background */
-      }
-
-      /* Style for checked checkboxes */
-      div.shiny-input-checkbox-group input[type='checkbox']:checked {
-        background-color: #E95420 !important;  /* Orange background when checked */
-        border-color: #E95420 !important;      /* Orange border when checked */
-      }
-      
-      /* Optional: Change the background color when selecting an item */
-      
-      .selectize-dropdown .active {
-        background-color: #E95420 !important;
-        color: white !important;
-      }
-      
-      /* Make sure checkbox borders are orange */
-      .checkbox input[type='checkbox'] {
-        width: 15px;
-        height: 15px;
-        border: 2px solid #E95420 !important;
-        background-color: white !important;
-        appearance: none; /* Removes default checkbox styles */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        border-radius: 3px; /* Optional: Rounds the corners */
-        cursor: pointer;
-        position: relative;
-      }
-      
-      /* When the checkbox is checked, change background color */
-      .checkbox input[type='checkbox']:checked {
-        background-color: #E95420 !important;
-        border-color: #E95420 !important;
-        position: relative;
-      }
-      
-      /* Adding a checkmark when checked */
-      .checkbox input[type='checkbox']:checked::after {
-        content: '✓'; /* Unicode checkmark */
-        font-size: 11px;
-        color: white !important;
-        position: absolute;
-        top: 0px;
-        left: 1px;
-        right: 1px;
-        bottom: 1px;
-      }
-      
-      /* Style checkbox labels */
-      .checkbox label,
-        div.checkbox label,
-        div.shiny-input-checkbox-group label {
-          color: #E95420 !important;
-          font-weight: bold;
-        }
-
-      /* Style the labels */
-      div.checkbox label {
-        color: #E95420 !important; /* Orange text */
-      }
-
-      /* Dropdown styles */
-      select {
-        background-color: white !important; /* Set the dropdown background to white */
-        color: #E95420 !important; /* Set text color to orange */
-        border: 1px solid #D43F00 !important; /* Orange border */
-        font-size: 14px !important;
-      }
-
-      select:focus {
-        background-color: white !important; /* Keep the background white when focused */
-        border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
-        color: #E95420 !important; /* Keep the text color as orange */
-      }
-
-      /* Optional: Add styles to dropdown list items */
-      .selectize-dropdown, .selectize-input {
-        background-color: white !important; /* Dropdown list background stays white */
-        color: #E95420 !important; /* Dropdown list text color is orange */
-        border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
-      }
-
-      .selectize-dropdown .item {
-        color: #E95420 !important; /* Dropdown items have orange text */
-      }
-
-      /* Hover effect for dropdown items */
-      .selectize-dropdown .item:hover {
-        background-color: #E95420 !important; /* Orange background on hover */
-        color: white !important; /* White text on hover */
-      }
-
-      /* Optional: Change the background color when selecting an item */
-      .selectize-dropdown .active {
-        background-color: #E95420 !important;
-        color: white !important;
-      }
-      
+  
+  /* Photo styles */
       .rounding-picture {
        border-radius: 5px; /* Rounds the edges of the image */
       }
@@ -277,6 +200,43 @@ ui <- fluidPage(
         height: 100% !important;  /* Ensure leaflet map container has full height */
         width: 100% !important;   /* Ensure leaflet map container has full width */
       }
+      
+      table {
+        font-size: 12px;  /* Adjust the font size here */
+      }
+      
+      h3 {
+        font-size: 24px;  /* Adjust font size for all headers */
+        margin-top: 20px;  /* Optional: space above the headers */
+        margin-left: 10px;  /* Optional: space to the left of the headers */
+        margin-right: 10px;  /* Optional: space to the right of the headers */
+      }
+      p {
+        font-size: 16px;  /* Adjust font size for paragraphs */
+        margin-left: 10px;  /* Optional: space to the left of the paragraphs */
+        margin-right: 10px;  /* Optional: space to the right of the paragraphs */
+      }
+      
+      h2 {margin-top: 20px;
+      margin-left: 10px;
+      }
+      
+      figcaption {
+        font-size: 12px;  /* Adjust font size for figure captions */
+        color: gray;   /* Optional: change the caption color */
+        font-style: italic;  /* Optional: make caption italic */
+      }
+      
+ /* Change font size for all table headers */
+    .dataTable th {
+      font-size: 14px !important;
+    }
+    
+    table th {
+      font-size: 14px; /* Adjust header font size */
+      font-weight: bold; /* Optional: make headers bold */
+    }
+      
     "))
   ),
   
@@ -325,6 +285,7 @@ ui <- fluidPage(
                         p("Drought dynamics are often informed by the following environmental variables: RILEY INSERT CONTENT HERE")
                  ),
                  column(6,
+                        br(),
                         tags$img(src = "almond_drought.jpg", 
                                  alt = "An abandoned almond orchard in Newman, California impacted by drought", 
                                  class = "regular-hover",
@@ -340,6 +301,7 @@ ui <- fluidPage(
                # Second row: image on the left, text panel on the right
                fluidRow(
                  column(6,
+                        br(),
                         tags$img(src = "IMG_1982.jpeg", 
                                  alt = "Photo of Fire on Hillside During a Prescribed Burn", 
                                  class = "regular-hover",
@@ -353,19 +315,19 @@ ui <- fluidPage(
                         and explore the distribution of drought-related environmental justice impacts across different counties.
 
                           Each tab provides the following:"),
-                        HTML("<strong>Background</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Background</strong></div>'),  # HTML to make text bold
                         p("Introduction to the project, explantion of the importance of understanding drought and its
                           predictors in California, guide for navigating the website."),
-                        HTML("<strong>Drought Map</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Drought Map</strong></div>'),  # HTML to make text bold
                         p("Interactive map of changes in drought severity throughout California 
                           between 2000 and 2024."),
-                        HTML("<strong>Principal Component Analysis</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Principal Component Analysis</strong></div>'),  # HTML to make text bold
                         p("Biplot produced by a Principal Component Analysis (a statistical analysis to understand how specific 
                           variables are correlated with one another) to understand the relationships between 
                           different climate variables and drought for California counties."),
-                        HTML("<strong>Climate Trends</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Climate Trends</strong></div>'),  # HTML to make text bold
                         p("Line graphs of different climate variables over time for California counties."),
-                        HTML("<strong>Environmental Justice</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Environmental Justice</strong></div>'),  # HTML to make text bold
                         p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties.")
                         
                  )
@@ -379,7 +341,7 @@ ui <- fluidPage(
                h3("Map of Drought Conditions from 2000 to 2024"),
                fluidRow(class = "full-height-row",
                  column(5,
-                        p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
+                        p(class = "custom-html-text", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
@@ -473,6 +435,7 @@ ui <- fluidPage(
                         wellPanel(selectInput("ej_variable",
                                               label = "Select Environmental Justice Metric",
                                               choices = NULL)),
+                        br(),
                         tableOutput("meta_data")
                  ),
                  column(6,
@@ -718,8 +681,8 @@ ces4_longer <- reactive({
 })
 
 meta_data <- reactive({
-  read_csv(here("data","meta_data.csv"))
-})
+   read_csv(here("data","meta_data.csv"))
+ })
 
 # Dynamically update the EJ factor choices from the 'ej_variable' column
 observe({
@@ -759,10 +722,9 @@ output$ej_box_plot <- renderPlot({
     ) 
 })
 
-# Render the table
 output$meta_data <- renderTable({
-  meta_data()
-})
+   meta_data()
+  })
 
 ############################
 
