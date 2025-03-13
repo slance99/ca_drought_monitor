@@ -443,8 +443,11 @@ ui <- fluidPage(
                  column(6,
                         offset = 1,
                         plotOutput("ej_box_plot", height = "500px", width = "90%"),
+                        br(),
+                        uiOutput("t_test_table"),
                         tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
+                      
                  )
                )
       ),
@@ -701,6 +704,24 @@ filtered_ej_data <- reactive({
   data
 })
 
+### Perform t-test for the selected ej variable separated by county
+t_test_result <- reactive({
+  req(input$ej_variable)
+  data <- filtered_ej_data()
+  
+  # Perform the t-test between counties
+  el_dorado_data <- data %>% filter(county == "El Dorado")
+  los_angeles_data <- data %>% filter(county == "Los Angeles")
+  
+  # Ensure both counties have data before performing the t-test
+  if(nrow(el_dorado_data) > 0 & nrow(los_angeles_data) > 0){
+    t_test <- t.test(el_dorado_data$value, los_angeles_data$value)
+    return(t_test)
+  } else {
+    return(NULL) #Null for missing data
+  }
+})
+
 # Create the plot
 output$ej_box_plot <- renderPlot({
   req(input$ej_variable)
@@ -724,9 +745,45 @@ output$ej_box_plot <- renderPlot({
     ) 
 })
 
+# Render the t-test result as a table
+output$t_test_table <- renderUI({
+  t_test <- t_test_result()
+  
+  if (is.null(t_test)) {
+    return(HTML("<p>Insufficient data</p>"))
+  }
+  
+  # Create a data frame to display the results
+  t_test_results <- data.frame(
+    "Variable" = input$ej_variable,
+    "County Comparison" = "El Dorado vs Los Angeles",
+    "p-value" = format(t_test$p.value, scientific = TRUE, digits = 3),  # Round to 3 decimal places
+    "t-statistic" = round(t_test$statistic, 4),
+    "Degrees of freedom" = round(t_test$parameter, 0)
+  )
+  
+  # Remove dots in column names
+  colnames(t_test_results) <- gsub("\\.", " ", colnames(t_test_results))
+  
+  # Use kable to render the table with styling
+  kable_output <- knitr::kable(t_test_results, 
+                               format = "html",  # Render as HTML
+                               caption = paste("T-Test Results for", input$ej_variable),
+                               digits = c(NA, NA, 5, 4, 0)) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), 
+                              full_width = FALSE, 
+                              position = "center") %>%
+    kableExtra::column_spec(4, width = "2cm")
+  
+  # Return the HTML-rendered table
+  HTML(kable_output)
+})
+
 output$meta_data <- renderTable({
    meta_data()
-  })
+
+
+})
 
 ############################
 
