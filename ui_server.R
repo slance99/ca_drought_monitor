@@ -12,6 +12,7 @@ library(DT)
 library(viridis)
 library(shinythemes)
 library(ggfortify)
+library(bslib)
 
 ############################################################################
 ############################################################################
@@ -72,7 +73,7 @@ climate_data <- climate_data |>
 #############################################
 
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
-
+meta_data <- read_csv(here("data","meta_data.csv"))
 
 #############################################
 
@@ -94,10 +95,34 @@ data_source <- data_source[, !names(data_source) %in% "Link"]
 ############################################################################
 
 ui <- fluidPage(
-  theme = shinytheme("united"),
+  theme = bs_theme(bootswatch = "united"),
   
   tags$head(
     tags$style(HTML("
+      
+      /* Style the checkbox border to orange */
+      .checkbox input[type='checkbox'] {
+        border: 2px solid #E95420 !important; /* Orange border */
+        background-color: #fff !important;  /* White background */
+      }
+
+      /* Style the checkbox when checked */
+      .checkbox input[type='checkbox']:checked {
+        background-color: #E95420 !important; /* Orange background when checked */
+        border-color: #E95420 !important;    /* Orange border when checked */
+        color: white !important;             /* White checkmark */
+      }
+
+      /* Style the checkbox border on hover */
+      .checkbox input[type='checkbox']:hover {
+        border-color: #E95420 !important;    /* Orange border on hover */
+      }
+
+      /* Optional: styling for focus (when the checkbox is focused) */
+      .checkbox input[type='checkbox']:focus {
+        outline: none !important;           /* Remove default outline */
+        border-color: #E95420 !important;  /* Orange border on focus */
+      }
 
       .irs-bar {
         background: #E95420 !important;
@@ -109,7 +134,6 @@ ui <- fluidPage(
         background: #E95420 !important;
         border: 1px solid #D43F00 !important;
       }
-      
       
        /* Style for the play button */
       .irs-slider-animate-btn {
@@ -135,109 +159,8 @@ ui <- fluidPage(
         color: white !important;
         border: 1px solid #D43F00 !important;
       }
-
-      /* Style for the checkbox input itself */
-      div.shiny-input-checkbox-group input[type='checkbox'] {
-        border: 2px solid #E95420 !important;  /* Orange border */
-        background-color: #fff !important;     /* Default white background */
-      }
-
-      /* Style for checked checkboxes */
-      div.shiny-input-checkbox-group input[type='checkbox']:checked {
-        background-color: #E95420 !important;  /* Orange background when checked */
-        border-color: #E95420 !important;      /* Orange border when checked */
-      }
-      
-      /* Optional: Change the background color when selecting an item */
-      
-      .selectize-dropdown .active {
-        background-color: #E95420 !important;
-        color: white !important;
-      }
-      
-      /* Make sure checkbox borders are orange */
-      .checkbox input[type='checkbox'] {
-        width: 15px;
-        height: 15px;
-        border: 2px solid #E95420 !important;
-        background-color: white !important;
-        appearance: none; /* Removes default checkbox styles */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        border-radius: 3px; /* Optional: Rounds the corners */
-        cursor: pointer;
-        position: relative;
-      }
-      
-      /* When the checkbox is checked, change background color */
-      .checkbox input[type='checkbox']:checked {
-        background-color: #E95420 !important;
-        border-color: #E95420 !important;
-        position: relative;
-      }
-      
-      /* Adding a checkmark when checked */
-      .checkbox input[type='checkbox']:checked::after {
-        content: '✓'; /* Unicode checkmark */
-        font-size: 11px;
-        color: white !important;
-        position: absolute;
-        top: 0px;
-        left: 1px;
-        right: 1px;
-        bottom: 1px;
-      }
-      
-      /* Style checkbox labels */
-      .checkbox label,
-        div.checkbox label,
-        div.shiny-input-checkbox-group label {
-          color: #E95420 !important;
-          font-weight: bold;
-        }
-
-      /* Style the labels */
-      div.checkbox label {
-        color: #E95420 !important; /* Orange text */
-      }
-
-      /* Dropdown styles */
-      select {
-        background-color: white !important; /* Set the dropdown background to white */
-        color: #E95420 !important; /* Set text color to orange */
-        border: 1px solid #D43F00 !important; /* Orange border */
-        font-size: 14px !important;
-      }
-
-      select:focus {
-        background-color: white !important; /* Keep the background white when focused */
-        border: 1px solid #E95420 !important; /* Change the border to the orange highlight */
-        color: #E95420 !important; /* Keep the text color as orange */
-      }
-
-      /* Optional: Add styles to dropdown list items */
-      .selectize-dropdown, .selectize-input {
-        background-color: white !important; /* Dropdown list background stays white */
-        color: #E95420 !important; /* Dropdown list text color is orange */
-        border: 1px solid #D43F00 !important; /* Orange border for the dropdown list */
-      }
-
-      .selectize-dropdown .item {
-        color: #E95420 !important; /* Dropdown items have orange text */
-      }
-
-      /* Hover effect for dropdown items */
-      .selectize-dropdown .item:hover {
-        background-color: #E95420 !important; /* Orange background on hover */
-        color: white !important; /* White text on hover */
-      }
-
-      /* Optional: Change the background color when selecting an item */
-      .selectize-dropdown .active {
-        background-color: #E95420 !important;
-        color: white !important;
-      }
-      
+  
+  /* Photo styles */
       .rounding-picture {
        border-radius: 5px; /* Rounds the edges of the image */
       }
@@ -277,6 +200,43 @@ ui <- fluidPage(
         height: 100% !important;  /* Ensure leaflet map container has full height */
         width: 100% !important;   /* Ensure leaflet map container has full width */
       }
+      
+      table {
+        font-size: 12px;  /* Adjust the font size here */
+      }
+      
+      h3 {
+        font-size: 24px;  /* Adjust font size for all headers */
+        margin-top: 20px;  /* Optional: space above the headers */
+        margin-left: 10px;  /* Optional: space to the left of the headers */
+        margin-right: 10px;  /* Optional: space to the right of the headers */
+      }
+      p {
+        font-size: 16px;  /* Adjust font size for paragraphs */
+        margin-left: 10px;  /* Optional: space to the left of the paragraphs */
+        margin-right: 10px;  /* Optional: space to the right of the paragraphs */
+      }
+      
+      h2 {margin-top: 20px;
+      margin-left: 10px;
+      }
+      
+      figcaption {
+        font-size: 12px;  /* Adjust font size for figure captions */
+        color: gray;   /* Optional: change the caption color */
+        font-style: italic;  /* Optional: make caption italic */
+      }
+      
+ /* Change font size for all table headers */
+    .dataTable th {
+      font-size: 14px !important;
+    }
+    
+    table th {
+      font-size: 14px; /* Adjust header font size */
+      font-weight: bold; /* Optional: make headers bold */
+    }
+      
     "))
   ),
   
@@ -297,7 +257,7 @@ ui <- fluidPage(
                tags$img(src = "lake_oroville_drought.jpg", 
                         class = "rounding-picture",
                         alt = "Image of Lake Oroville Dam with the Treeline High Above the Water Level Illustrating Losses from Evaporation and Use", 
-                        style = "width: 100%; height: 400px;"),
+                        style = "width: 100%; height: 300px;"),
                tags$figcaption(tags$i("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger.")),
                
                # First row: text panel on the left, image on the right
@@ -325,10 +285,11 @@ ui <- fluidPage(
                         p("Drought dynamics are often informed by the following environmental variables: RILEY INSERT CONTENT HERE")
                  ),
                  column(6,
+                        br(),
                         tags$img(src = "almond_drought.jpg", 
                                  alt = "An abandoned almond orchard in Newman, California impacted by drought", 
                                  class = "regular-hover",
-                                 style = "width: 100%; height: 400px;"),
+                                 style = "width: 100%; height: 450px;"),
                         tags$figcaption(tags$i("Abandoned drought-stricken almond orchard in Newman, California. Photo by Terry Chea, AP."))
                )
                ),
@@ -340,36 +301,39 @@ ui <- fluidPage(
                # Second row: image on the left, text panel on the right
                fluidRow(
                  column(6,
+                        br(),
                         tags$img(src = "IMG_1982.jpeg", 
                                  alt = "Photo of Fire on Hillside During a Prescribed Burn", 
                                  class = "regular-hover",
-                                 style = "width: 100%; height: 400px;"),
+                                 style = "width: 100%; height: 525px;"),
                         tags$figcaption(tags$i("Prescribed Fire for Managing Fuels and Wildfire Risk at Sedgwick Reserve in Santa Ynez, California.
-                                        Photo by Thuy-Tien Bui."))
-                 ),
+                                        Photo by Thuy-Tien Bui.")),
+                 )
+                        ,
                  column(6,
                         h3("Navigating the Website"),
                         p("This Shiny App offers an interactive platform to visualize spatial variations in drought severity, analyze patterns in drought parameters, 
                         and explore the distribution of drought-related environmental justice impacts across different counties.
 
                           Each tab provides the following:"),
-                        HTML("<strong>Background</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Background</strong></div>'),  # HTML to make text bold
                         p("Introduction to the project, explantion of the importance of understanding drought and its
                           predictors in California, guide for navigating the website."),
-                        HTML("<strong>Drought Map</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Drought Map</strong></div>'),  # HTML to make text bold
                         p("Interactive map of changes in drought severity throughout California 
                           between 2000 and 2024."),
-                        HTML("<strong>Principal Component Analysis</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Principal Component Analysis</strong></div>'),  # HTML to make text bold
                         p("Biplot produced by a Principal Component Analysis (a statistical analysis to understand how specific 
                           variables are correlated with one another) to understand the relationships between 
                           different climate variables and drought for California counties."),
-                        HTML("<strong>Climate Trends</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Climate Trends</strong></div>'),  # HTML to make text bold
                         p("Line graphs of different climate variables over time for California counties."),
-                        HTML("<strong>Environmental Justice</strong>"),  # HTML to make text bold
+                        HTML('<div style="margin-left: 10px"><strong>Environmental Justice</strong></div>'),  # HTML to make text bold
                         p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties.")
                         
                  )
-               )
+               ),
+               p(em("Developed by Riley Black, Thuy-Tien Bui, and Sam Lance"), style="margin-right: 0px; margin-left: 0px; margin-bottom: 0px; margin-top: 0px;text-align:justify;background-color:#FBDDD2;padding:10px;border-radius:0px"),
       ),
       
       #############################################
@@ -379,11 +343,11 @@ ui <- fluidPage(
                h3("Map of Drought Conditions from 2000 to 2024"),
                fluidRow(class = "full-height-row",
                  column(5,
-                        p(HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
+                        p(class = "custom-html-text", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
-                           <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b><br><br>")),
+                           <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b>")),
                         sliderInput("year", "Select Year:",
                                     min = min(shp_data$year), 
                                     max = max(shp_data$year), 
@@ -416,7 +380,7 @@ ui <- fluidPage(
                              This PCA focuses on climate variables and their relationship to drought conditions within California Counties in 2021.
                              
                              <br><br><b><span style='color: #E95420;'>To understand the relationships between each
-                             of these variables, select at least two variables using the checkboxes below:</span></b><br><br>")),
+                             of these variables, select at least two variables using the checkboxes below:</span></b>")),
                         
                         wellPanel(checkboxGroupInput("pca_variables",
                                                      label = "Climate Variables",
@@ -440,7 +404,7 @@ ui <- fluidPage(
                              determining drought conditions. Increased temperature and decreased precipitation can lead to more severe and prolonged droughts.
                              Due to climate change, these factors have and will continue to experience significant changes over time, impacting drought risk.
                              
-                             <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b><br><br>")),
+                             <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b>")),
                         wellPanel(selectInput("county_cl",
                                               label = "Select County",
                                               choices = NULL),
@@ -468,18 +432,26 @@ ui <- fluidPage(
                              difference would be Los Angeles, a large urban city in Southern California, and El Dorado, a small rural county in Northern California. 
                              
                              <br><br><b><span style='color: #E95420;'> To explore how different Environmental Justice metrics
-                             differ between the two counties, select your desired variable below </span></b><br><br>")),
+                             differ between the two counties, select your desired variable below </span></b>")),
                         
                         wellPanel(selectInput("ej_variable",
                                               label = "Select Environmental Justice Metric",
                                               choices = NULL)),
+                        br(),
                         tableOutput("meta_data")
                  ),
                  column(6,
                         offset = 1,
+<<<<<<< HEAD
                         plotOutput("ej_box_plot", height = "100vh", width = "100%"),
+=======
+                        plotOutput("ej_box_plot", height = "500px", width = "90%"),
+                        br(),
+                        uiOutput("t_test_table"),
+>>>>>>> 40977782ba8d41c65a96dfc3f546d1e98383a3f7
                         tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
+                      
                  )
                )
       ),
@@ -718,8 +690,8 @@ ces4_longer <- reactive({
 })
 
 meta_data <- reactive({
-  read_csv(here("data","meta_data.csv"))
-})
+   read_csv(here("data","meta_data.csv"))
+ })
 
 # Dynamically update the EJ factor choices from the 'ej_variable' column
 observe({
@@ -734,6 +706,24 @@ filtered_ej_data <- reactive({
   data <- ces4_longer() %>%
     filter(`ej_variable` == input$ej_variable)
   data
+})
+
+### Perform t-test for the selected ej variable separated by county
+t_test_result <- reactive({
+  req(input$ej_variable)
+  data <- filtered_ej_data()
+  
+  # Perform the t-test between counties
+  el_dorado_data <- data %>% filter(county == "El Dorado")
+  los_angeles_data <- data %>% filter(county == "Los Angeles")
+  
+  # Ensure both counties have data before performing the t-test
+  if(nrow(el_dorado_data) > 0 & nrow(los_angeles_data) > 0){
+    t_test <- t.test(el_dorado_data$value, los_angeles_data$value)
+    return(t_test)
+  } else {
+    return(NULL) #Null for missing data
+  }
 })
 
 # Create the plot
@@ -759,9 +749,44 @@ output$ej_box_plot <- renderPlot({
     ) 
 })
 
-# Render the table
+# Render the t-test result as a table
+output$t_test_table <- renderUI({
+  t_test <- t_test_result()
+  
+  if (is.null(t_test)) {
+    return(HTML("<p>Insufficient data</p>"))
+  }
+  
+  # Create a data frame to display the results
+  t_test_results <- data.frame(
+    "Variable" = input$ej_variable,
+    "County Comparison" = "El Dorado vs Los Angeles",
+    "p-value" = format(t_test$p.value, scientific = TRUE, digits = 3),  # Round to 3 decimal places
+    "t-statistic" = round(t_test$statistic, 4),
+    "Degrees of freedom" = round(t_test$parameter, 0)
+  )
+  
+  # Remove dots in column names
+  colnames(t_test_results) <- gsub("\\.", " ", colnames(t_test_results))
+  
+  # Use kable to render the table with styling
+  kable_output <- knitr::kable(t_test_results, 
+                               format = "html",  # Render as HTML
+                               caption = paste("T-Test Results for", input$ej_variable),
+                               digits = c(NA, NA, 5, 4, 0)) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), 
+                              full_width = FALSE, 
+                              position = "center") %>%
+    kableExtra::column_spec(4, width = "2cm")
+  
+  # Return the HTML-rendered table
+  HTML(kable_output)
+})
+
 output$meta_data <- renderTable({
-  meta_data()
+   meta_data()
+
+
 })
 
 ############################
@@ -829,7 +854,7 @@ output$biplot <- renderPlot({
            size = 3) +
     scale_color_manual(values = color_palette) +
     theme_minimal() +
-    labs(title = "PCA of Selected Drought and Climate Conditions") +
+    labs(title = "PCA Biplot of Selected Drought and Climate Factors") +
     theme(
       axis.text.x = element_text(size = 14),  # Larger x-axis labels
       axis.text.y = element_text(size = 14),  # Larger y-axis labels

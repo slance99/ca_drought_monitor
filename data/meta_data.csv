@@ -1,11 +1,11 @@
-﻿Variable Name,Description
-Total Population,2019 ACS population estimates in census tracts 
-Ozone,Amount of daily maximum 8 hour Ozone concentration 
+Variable Name,Description
+Total Population,2019 ACS population estimates in census tracts
+Ozone,Amount of daily maximum 8 hour Ozone concentration
 PM2.5,Annual mean PM 2.5 concentrations
 Drinking Water,Drinking water contaminant index for selected contaminants
-Groundwater Threats,"Groundwater threats, sum of weighted GeoTracker leaking underground storage tank sites  within buffered distances to populated blocks of census tracts"
+Groundwater Threats,"Groundwater threats, sum of weighted GeoTracker leaking underground storage tank sites within buffered distances to populated blocks of census tracts"
 Imp. Water Bodies,"Impaired water bodies, sum of number of pollutants across all impaired water bodies within buffered distances to populated blocks of census tracts"
 Pollution Burden Score,Pollution Burden variable scaled with a range of 0-10. (Used to calculate CES 4.0 Score)
 Asthma,Age-adjusted rate of emergency department visits for asthma
-Cardiovascular Diesease ,"Age-adjusted rate of emergency department visits for heart attacks per 10,000"
+Cardiovascular Diesease,"Age-adjusted rate of emergency department visits for heart attacks per 10,000"
 Poverty,Percent of population living below two times the federal poverty level
