@@ -648,18 +648,12 @@ server <- function(input, output, session) {
     req(input$climate_factor)
     data <- filtered_data() 
     
-    climate_palette <- c("Precipitation (mm)" = "#03045e", 
-                        "Max Temperature (°C)" = "#c1121f",
-                        "Mean Temperature (°C)" = "#fb8500",
-                        "Minimum Temperature (°C)" = "#ffb703",
-                        "Minimum Vapor Pressure Deficit (hPa)" = "#8ecae6",
-                        "Maximum Vapor Pressure Deficit (hPa)" = "#219ebc")
     
     ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
-      geom_line(size = 1.2) +  # Slightly thicker line for better visibility
-      geom_point(size = 3) +  # Larger points for better visibility)
+      geom_rect(aes(xmin = 2012, xmax = 2016, ymin = -Inf, ymax = Inf), fill = "#FBDDD2", color = NA, alpha = 0.1) +  # Transparent rectangle
+      geom_line(aes(color = "#E9531F"), size = 1.2) +  # Slightly thicker line for better visibility
+      geom_point(aes(color = "#E9531F"), size = 3) +  # Larger points for better visibility)
       theme_minimal() +
-      scale_color_manual(values = climate_palette) +  # Apply the custom color palette
       labs(x = "Year", 
            y = paste(input$climate_factor), 
            title = paste(input$climate_factor, "Trend in", input$county_cl)) +
