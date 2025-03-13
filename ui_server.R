@@ -665,8 +665,8 @@ server <- function(input, output, session) {
     
     ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
       geom_rect(aes(xmin = 2012, xmax = 2016, ymin = -Inf, ymax = Inf), fill = "#FBDDD2", color = NA, alpha = 0.1) +  # Transparent rectangle
-      geom_line(aes(color = "#E9531F"), size = 1.2) +  # Slightly thicker line for better visibility
-      geom_point(aes(color = "#E9531F"), size = 3) +  # Larger points for better visibility)
+      geom_line(aes(color = "#E95420"), size = 1.2) +  # Slightly thicker line for better visibility
+      geom_point(aes(color = "#E95420"), size = 3) +  # Larger points for better visibility)
       theme_minimal() +
       labs(x = "Year", 
            y = paste(input$climate_factor), 
