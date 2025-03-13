@@ -347,7 +347,7 @@ ui <- fluidPage(
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
-                           <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b><br><br>")),
+                           <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b>")),
                         sliderInput("year", "Select Year:",
                                     min = min(shp_data$year), 
                                     max = max(shp_data$year), 
@@ -380,7 +380,7 @@ ui <- fluidPage(
                              This PCA focuses on climate variables and their relationship to drought conditions within California Counties in 2021.
                              
                              <br><br><b><span style='color: #E95420;'>To understand the relationships between each
-                             of these variables, select at least two variables using the checkboxes below:</span></b><br><br>")),
+                             of these variables, select at least two variables using the checkboxes below:</span></b>")),
                         
                         wellPanel(checkboxGroupInput("pca_variables",
                                                      label = "Climate Variables",
@@ -404,7 +404,7 @@ ui <- fluidPage(
                              determining drought conditions. Increased temperature and decreased precipitation can lead to more severe and prolonged droughts.
                              Due to climate change, these factors have and will continue to experience significant changes over time, impacting drought risk.
                              
-                             <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b><br><br>")),
+                             <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b>")),
                         wellPanel(selectInput("county_cl",
                                               label = "Select County",
                                               choices = NULL),
@@ -432,7 +432,7 @@ ui <- fluidPage(
                              difference would be Los Angeles, a large urban city in Southern California, and El Dorado, a small rural county in Northern California. 
                              
                              <br><br><b><span style='color: #E95420;'> To explore how different Environmental Justice metrics
-                             differ between the two counties, select your desired variable below </span></b><br><br>")),
+                             differ between the two counties, select your desired variable below </span></b>")),
                         
                         wellPanel(selectInput("ej_variable",
                                               label = "Select Environmental Justice Metric",
@@ -850,7 +850,7 @@ output$biplot <- renderPlot({
            size = 3) +
     scale_color_manual(values = color_palette) +
     theme_minimal() +
-    labs(title = "PCA of Selected Drought and Climate Conditions") +
+    labs(title = "PCA Biplot of Selected Drought and Climate Factors") +
     theme(
       axis.text.x = element_text(size = 14),  # Larger x-axis labels
       axis.text.y = element_text(size = 14),  # Larger y-axis labels
