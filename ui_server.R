@@ -851,14 +851,17 @@ output$biplot <- renderPlot({
            size = 3) +
     scale_color_manual(values = color_palette) +
     theme_minimal() +
-    labs(title = "PCA Biplot of Selected Drought and Climate Factors") +
+    labs(title = "PCA Biplot of Selected Drought and Climate Factors", color = "Drought Index") +
     theme(
       axis.text.x = element_text(size = 14),  # Larger x-axis labels
       axis.text.y = element_text(size = 14),  # Larger y-axis labels
       axis.title.x = element_text(size = 16),  # Larger x-axis title
       axis.title.y = element_text(size = 16),  # Larger y-axis title
       plot.title = element_text(size = 18, hjust = 0.5),# Larger title
-      legend.position = "none") 
+      legend.position = "top",
+      legend.title = element_text(size = 14),
+      legend.text = element_text(size = 14)
+    )
     
 })
 
