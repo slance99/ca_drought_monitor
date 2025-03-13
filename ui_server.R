@@ -442,13 +442,10 @@ ui <- fluidPage(
                  ),
                  column(6,
                         offset = 1,
-<<<<<<< HEAD
                         plotOutput("ej_box_plot", height = "100vh", width = "100%"),
-=======
-                        plotOutput("ej_box_plot", height = "500px", width = "90%"),
                         br(),
                         uiOutput("t_test_table"),
->>>>>>> 40977782ba8d41c65a96dfc3f546d1e98383a3f7
+
                         tags$figcaption("Health and human impacts related to drought across El Dorado and Los Angeles County Census Tracts.
                                       According to CES4 (2021), El Dorado has 42 census tracts and Los Angeles has 2343 census tracts.")
                       
