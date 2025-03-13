@@ -257,7 +257,7 @@ ui <- fluidPage(
                tags$img(src = "lake_oroville_drought.jpg", 
                         class = "rounding-picture",
                         alt = "Image of Lake Oroville Dam with the Treeline High Above the Water Level Illustrating Losses from Evaporation and Use", 
-                        style = "width: 100%; height: 400px;"),
+                        style = "width: 100%; height: 300px;"),
                tags$figcaption(tags$i("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger.")),
                
                # First row: text panel on the left, image on the right
@@ -289,7 +289,7 @@ ui <- fluidPage(
                         tags$img(src = "almond_drought.jpg", 
                                  alt = "An abandoned almond orchard in Newman, California impacted by drought", 
                                  class = "regular-hover",
-                                 style = "width: 100%; height: 400px;"),
+                                 style = "width: 100%; height: 450px;"),
                         tags$figcaption(tags$i("Abandoned drought-stricken almond orchard in Newman, California. Photo by Terry Chea, AP."))
                )
                ),
@@ -305,10 +305,11 @@ ui <- fluidPage(
                         tags$img(src = "IMG_1982.jpeg", 
                                  alt = "Photo of Fire on Hillside During a Prescribed Burn", 
                                  class = "regular-hover",
-                                 style = "width: 100%; height: 400px;"),
+                                 style = "width: 100%; height: 525px;"),
                         tags$figcaption(tags$i("Prescribed Fire for Managing Fuels and Wildfire Risk at Sedgwick Reserve in Santa Ynez, California.
-                                        Photo by Thuy-Tien Bui."))
-                 ),
+                                        Photo by Thuy-Tien Bui.")),
+                 )
+                        ,
                  column(6,
                         h3("Navigating the Website"),
                         p("This Shiny App offers an interactive platform to visualize spatial variations in drought severity, analyze patterns in drought parameters, 
@@ -331,7 +332,8 @@ ui <- fluidPage(
                         p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties.")
                         
                  )
-               )
+               ),
+               p(em("Developed by Riley Black, Thuy-Tien Bui, and Sam Lance"), style="margin-right: 0px; margin-left: 0px; margin-bottom: 0px; margin-top: 0px;text-align:justify;background-color:#FBDDD2;padding:10px;border-radius:0px"),
       ),
       
       #############################################
