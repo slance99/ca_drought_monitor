@@ -618,7 +618,9 @@ server <- function(input, output, session) {
         backgroundColor = styleEqual(names(category_colors), category_colors),
         color = styleEqual(
           c('D0', 'D1', 'D2', 'D3', 'D4'), 
-          c('black', 'black', 'black', 'black', '#F5F5F5'))
+          c('black', 'black', 'black', 'black', '#F5F5F5')),
+        fontSize = '16px',  # Make the font size larger
+        textAlign = 'center'  # Center the text
       )
   })
   
