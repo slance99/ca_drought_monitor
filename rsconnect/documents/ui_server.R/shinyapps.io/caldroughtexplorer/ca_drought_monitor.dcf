@@ -1,0 +1,10 @@
+name: ca_drought_monitor
+title:
+username: caldroughtexplorer
+account: caldroughtexplorer
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14244024
+bundleId: 9942345
+url: https://caldroughtexplorer.shinyapps.io/ca_drought_monitor/
+version: 1
