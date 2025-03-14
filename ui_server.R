@@ -356,30 +356,32 @@ ui <- fluidPage(
 #-------------------------------DROUGHT MAP TAB---------------------------------
 
       tabPanel("Drought Map", 
-          fluidRow(class = "full-height-row",
+         fluidRow(class = "full-height-row", 
                   column(5,
-                         h3(style = "margin-left: 0px;", "Map of Drought Conditions from 2000 to 2024"),
-                         p(class = "custom-html-text", style = "margin-left: 0px;", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
-                           Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
-                           The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
-                           The data in this map represents annual drought conditions during the peak drought season in late August. 
-                           <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b>")),
-                         sliderInput("year", "Select Year:",
-                                     min = min(shp_data$year), 
-                                     max = max(shp_data$year), 
-                                     value = min(shp_data$year), 
-                                     step = 1,
-                                     sep = "",
-                                     width = "100%",
-                                     animate = animationOptions(interval = 1500, loop = TRUE)),
-                         h4(style = "margin-left: 0px;","Drought Index Categories"),
+                         h3(style = "margin-left: 10px;", "Map of Drought Conditions from 2000 to 2024"),
+                         p(class = "custom-html-text", style = "margin-left: 10px;", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
+        Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
+        The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
+        The data in this map represents annual drought conditions during the peak drought season in late August. 
+        <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b>")),
+                         div(style = "margin-left: 15px; margin-right: 15px;",  # Adding margins to the div container
+                             sliderInput("year", "Select Year:",
+                                         min = min(shp_data$year), 
+                                         max = max(shp_data$year), 
+                                         value = min(shp_data$year), 
+                                         step = 1,
+                                         sep = "",
+                                         width = "100%",
+                                         animate = animationOptions(interval = 1500, loop = TRUE))
+                         ),
+                         h4(style = "margin-left: 10px;","Drought Index Categories"),
                          DTOutput("drought_table")
                   ),
                   column(7, 
                          leafletOutput("map", height = "100%", width = "100%")
                   )
-              )
-          ),
+           )
+      ),
       
 #-----------------------------------PCA TAB-------------------------------------
 
