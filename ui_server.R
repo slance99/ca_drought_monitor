@@ -430,7 +430,7 @@ ui <- fluidPage(
                  ),
                  column(6,
                         offset = 1,
-                        plotOutput("ej_box_plot", height = "100vh", width = "100%"),
+                        plotOutput("ej_box_plot", height = "80vh", width = "100%"),
                         br(),
                         uiOutput("t_test_table"),
 
@@ -628,7 +628,11 @@ server <- function(input, output, session) {
     
     
     ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
-      geom_rect(aes(xmin = 2012, xmax = 2016, ymin = -Inf, ymax = Inf), fill = "#FBDDD2", color = NA, alpha = 0.1) +  # Transparent rectangle
+      geom_rect(aes(xmin = 2012, xmax = 2016, ymin = -Inf, ymax = Inf), 
+                fill = "#FBDDD2", color = NA, alpha = 0.1) +  # Transparent rectangle
+      geom_text(aes(x = 2014, y = max(value) * 1.1, 
+                    label = str_wrap("Extreme Drought", width = 7), vjust = 1), 
+                color = "#E95420", size = 5.5, fontface = "bold") +  # Text label
       geom_line(aes(color = "#E95420"), size = 1.2) +  # Slightly thicker line for better visibility
       geom_point(aes(color = "#E95420"), size = 3) +  # Larger points for better visibility)
       theme_minimal() +
