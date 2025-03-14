@@ -333,7 +333,7 @@ ui <- fluidPage(
                                  alt = "Rancher walking on dried lakebed", 
                                  class = "regular-hover",
                                  style = "width: 100%; height: 525px;"),
-                        tags$figcaption(tags$i("Rancher walking on dried lakebed in Cambria, California. Photo by Al Seib, LA Times")),
+                        tags$figcaption(tags$i("Rancher walking on dried lakebed in Cambria, California. Photo by Al Seib, LA Times.")),
                  )
                ),
                p(em("Developed by Riley Black, Thuy-Tien Bui, and Sam Lance"), style="margin-right: 0px; margin-left: 0px; margin-bottom: 0px; margin-top: 0px;text-align:justify;background-color:#FBDDD2;padding:10px;border-radius:0px"),
