@@ -437,7 +437,7 @@ ui <- fluidPage(
                                               label = "Select Environmental Justice Metric",
                                               choices = NULL)),
                         br(),
-                        tableOutput("meta_data")
+                        DTOutput("meta_data")
                  ),
                  column(6,
                         offset = 1,
@@ -769,9 +769,23 @@ ces4_longer <- reactive({
   read_csv(here("data","ces4_longer.csv"))
 })
 
-meta_data <- reactive({
-   read_csv(here("data","meta_data.csv"))
- })
+  ej_meta_data <- data.frame(
+    Variable = c("Total Population", "Ozone", "PM 2.5", 
+                 "Drinking Water", "Groundwater Threats", 
+                 "Imp. Water Bodies", "Pollution Burden Score",
+                 "Asthma", "Cardiovascular Disease",
+                 "Poverty"),
+    Description = c("2019 ACS population estimates in census tracts", 
+                    "Amount of daily maximum 8-hour Ozone concentration", 
+                    "Annual mean PM 2.5 concentrations", 
+                    "Drinking water contaminant index for selected contaminants", 
+                    "Sum of weighted GeoTracker leaking underground storage tank sites within buffered distances to populated blocks of census tracts",
+                    "Sum of number of pollutants across all impaired water bodies within buffered distances to populated blocks of census tracts",
+                    "Pollution Burden used to calculate CES 4.0 score scaled 0-10",
+                    "Age-adjusted rate of emergency department visits for asthma",
+                    "Age-adjusted rate of emergency department visits for heart attacks per 10,000",
+                    "Percent of population below the federal poverty level")
+  )
 
 # Dynamically update the EJ factor choices from the 'ej_variable' column
 observe({
@@ -856,18 +870,28 @@ output$t_test_table <- renderUI({
                                digits = c(NA, NA, 5, 4, 0)) %>%
     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), 
                               full_width = FALSE, 
-                              position = "center") %>%
+                              position = "center",
+                              font_size = 14) %>%
     kableExtra::column_spec(4, width = "2cm")
   
   # Return the HTML-rendered table
   HTML(kable_output)
 })
 
-output$meta_data <- renderTable({
-   meta_data()
-
-
+output$meta_data <- renderDT({
+  datatable(ej_meta_data, 
+            options = list(
+              dom = 't',
+              paging = FALSE,  
+              searching = FALSE,
+              columnDefs = list(list(
+                targets = 0,             
+                visible = FALSE          
+              ))
+            ),
+            escape = FALSE) 
 })
+
 
 }
 
