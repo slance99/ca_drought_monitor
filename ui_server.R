@@ -1,3 +1,4 @@
+#----------------------------LOAD LIBRARIES------------------------------------
 library(shiny)
 library(leaflet)
 library(sf)
@@ -14,16 +15,9 @@ library(shinythemes)
 library(ggfortify)
 library(bslib)
 
-############################################################################
-############################################################################
-############################################################################
+#-------------------------------LOAD DATA--------------------------------------
 
-#############################################
-
-########### DROUGHT MAP - TB ###########
-
-#############################################
-
+# Drought data
 data_dir <- here("data", "drought_index")
 
 shp_files <- list.files(data_dir, pattern = "\\.shp$", recursive = TRUE, full.names = TRUE)
@@ -40,12 +34,7 @@ shp_data <- data.frame(
   arrange(year) %>% 
   distinct(year, .keep_all = TRUE)
 
-#############################################
-
-########### CLIMATE TRENDS - SL ###########
-
-#############################################
-
+# Climate data
 climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
   mutate(
     climate_factor = recode(climate_factor, 
@@ -66,21 +55,13 @@ climate_data <- read_csv(here("data", "monthly_prism_climate.csv")) %>%
 climate_data <- climate_data |>
   mutate(county = paste0(climate_data$county, " County"))
 
-#############################################
 
-########### PCA - RB ###########
-
-#############################################
-
+# PCA Data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
 meta_data <- read_csv(here("data","meta_data.csv"))
 
-#############################################
 
-########### CITATIONS - TB ###########
-
-#############################################
-
+# Citations Data
 data_source <- read_csv(here("data","data_citations.csv"))
 
 data_source$`Source` <- paste0(
@@ -90,11 +71,12 @@ data_source$`Source` <- paste0(
 
 data_source <- data_source[, !names(data_source) %in% "Link"]
 
-############################################################################
-############################################################################
-############################################################################
+
+#----------------------------------SHINY UI------------------------------------
 
 ui <- fluidPage(
+
+# Set themes and styles
   theme = bs_theme(bootswatch = "united"),
   
   tags$head(
@@ -160,7 +142,7 @@ ui <- fluidPage(
         border: 1px solid #D43F00 !important;
       }
   
-  /* Photo styles */
+      /* Photo styles */
       .rounding-picture {
        border-radius: 5px; /* Rounds the edges of the image */
       }
@@ -234,10 +216,10 @@ ui <- fluidPage(
         font-style: italic;  /* Optional: make caption italic */
       }
       
- /* Change font size for all table headers */
-    .dataTable th {
-      font-size: 14px !important;
-    }
+      /* Change font size for all table headers */
+        .dataTable th {
+        font-size: 14px !important;
+      }
     
     table th {
       font-size: 14px; /* Adjust header font size */
@@ -249,11 +231,7 @@ ui <- fluidPage(
   
   titlePanel("California Drought Explorer"),
   
-  #############################################
-  
-  ########### DROUGHT INTRO - SL ###########
-  
-  #############################################
+  #----------------------------------HOME TAB------------------------------------
     
     tabsetPanel(
       id = "tabs",
@@ -350,9 +328,8 @@ ui <- fluidPage(
                p(em("Developed by Riley Black, Thuy-Tien Bui, and Sam Lance"), style="margin-right: 0px; margin-left: 0px; margin-bottom: 0px; margin-top: 0px;text-align:justify;background-color:#FBDDD2;padding:10px;border-radius:0px"),
       ),
       
-      #############################################
-      
-      # DROUGHT MAP Tab
+#-------------------------------DROUGHT MAP TAB---------------------------------
+
       tabPanel("Drought Map", 
                h3("Map of Drought Conditions from 2000 to 2024"),
                fluidRow(class = "full-height-row",
@@ -379,9 +356,8 @@ ui <- fluidPage(
                )
       ),
       
-      #############################################
-      
-      # Principal Component Analysis (PCA) Tab
+#-----------------------------------PCA TAB-------------------------------------
+
       tabPanel("Principal Component Analysis", 
                h3("Principal Component Analysis for Environmental Variables Related to Drought"),
                fluidRow(
@@ -407,9 +383,8 @@ ui <- fluidPage(
                )
       ),
       
-      #############################################
-      
-      # Climate Factors Tab
+#---------------------------------CLIMATE TAB-----------------------------------
+
       tabPanel("Climate Trends", 
                h3("Understanding Climate Trends for California Counties"),
                fluidRow(
@@ -433,9 +408,8 @@ ui <- fluidPage(
                )
       ),
       
-      #############################################
-      
-      # Environmental Justice Tab
+#----------------------------------EJ TAB--------------------------------------
+
       tabPanel("Environmental Justice", 
                h3("Health and Human Impacts Related to Drought"),
                fluidRow(
@@ -467,9 +441,8 @@ ui <- fluidPage(
                )
       ),
       
-      #############################################
-      
-      # Data & References Tab
+#-------------------------------REFERENCES TAB---------------------------------
+
       tabPanel("Data & References",
                h3("Data Sources"),
                fluidRow(
@@ -489,20 +462,15 @@ ui <- fluidPage(
     )
   )
 
-############################################################################
-############################################################################
-############################################################################
+#-------------------------------SHINY SERVER---------------------------------
+
 
 # Define server logic
 server <- function(input, output, session) {
+
   
-  ############################
+#-------------------------------DROUGHT MAP TAB---------------------------------
   
-  ###### DROUGHT MAP - TB ############
-  
-  ############################
-  
-  # More drought server parameters
   initial_year <- min(shp_data$year)  # Get the earliest year
   initial_file <- shp_data %>%
     filter(year == initial_year) %>%
@@ -632,11 +600,7 @@ server <- function(input, output, session) {
       )
   })
   
-  ############################
-  
-  ###### CLIMATE FACTORS - SL ############
-  
-  ############################
+#---------------------------------CLIMATE TAB-----------------------------------
   
   observe({
     counties <- unique(climate_data$county)
@@ -665,8 +629,8 @@ server <- function(input, output, session) {
     
     ggplot(data, aes(x = date, y = value, color = climate_factor)) + 
       geom_rect(aes(xmin = 2012, xmax = 2016, ymin = -Inf, ymax = Inf), fill = "#FBDDD2", color = NA, alpha = 0.1) +  # Transparent rectangle
-      geom_line(aes(color = "#E9531F"), size = 1.2) +  # Slightly thicker line for better visibility
-      geom_point(aes(color = "#E9531F"), size = 3) +  # Larger points for better visibility)
+      geom_line(aes(color = "#E95420"), size = 1.2) +  # Slightly thicker line for better visibility
+      geom_point(aes(color = "#E95420"), size = 3) +  # Larger points for better visibility)
       theme_minimal() +
       labs(x = "Year", 
            y = paste(input$climate_factor), 
@@ -683,12 +647,97 @@ server <- function(input, output, session) {
       )
   })
   
-  ############################
-
-  ###### ENVIRONMENTAL JUSTICE - RB ############
+  #----------------------------------PCA TAB--------------------------------------
   
-  ############################
-
+  # Load the data reactively
+  joined_drought_data <- reactive({
+    read_csv(here("data", "joined_drought_data.csv"))
+  })
+  
+  # Dynamically update the checkbox choices from the numeric columns of the data
+  observe({
+    data <- joined_drought_data() %>% 
+      select(-date)
+    
+    # Get only numeric columns
+    numeric_columns <- colnames(data)[sapply(data, is.numeric)]
+    
+    # Select variables to start
+    selected_columns <- c("Drought Index", "Total Acres Burned", "Total Precipitation (mm)", "Average Temperature C")
+    
+    # Update the checkbox choices to include only numeric columns
+    updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = selected_columns)
+  })
+  
+  # Filter the data based on selected variables for PCA
+  pca_data <- reactive({
+    req(input$pca_variables)  # Ensure some variables are selected
+    
+    # Filter the data by selected variables
+    data <- joined_drought_data()
+    data_selected <- data[, input$pca_variables, drop = FALSE]
+    
+    # Remove any columns that have zero variance
+    data_selected <- data_selected[, apply(data_selected, 2, var) != 0]
+    
+  })
+  
+  # Perform PCA on the selected variables
+  pca_result <- reactive({
+    req(pca_data())  # Ensure the filtered data is ready
+    prcomp(pca_data(), scale = TRUE)
+  })
+  
+  # Define custom colors in a vector
+  color_values <- c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001")
+  color_palette <- setNames(color_values, c("D0", "D1", "D2", "D3", "D4"))
+  
+  # Plot the PCA biplot
+  output$biplot <- renderPlot({
+    req(pca_result())
+    pca <- pca_result()
+    
+    autoplot(pca, 
+             data = joined_drought_data(), 
+             loadings = TRUE, 
+             color = "USDM_index",
+             loadings.label = TRUE,
+             loadings.colour = "black",
+             loadings.label.colour = "black",
+             loadings.label.size = 5,
+             size = 3) +
+      scale_color_manual(values = color_palette) +
+      theme_minimal() +
+      labs(title = "PCA Biplot of Selected Drought and Climate Factors", color = "Drought Index") +
+      theme(
+        axis.text.x = element_text(size = 14),  # Larger x-axis labels
+        axis.text.y = element_text(size = 14),  # Larger y-axis labels
+        axis.title.x = element_text(size = 16),  # Larger x-axis title
+        axis.title.y = element_text(size = 16),  # Larger y-axis title
+        plot.title = element_text(size = 18, hjust = 0.5),# Larger title
+        legend.position = "top",
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 14)
+      )
+    
+  })
+  
+  output$data_source <- renderDT({
+    datatable(data_source, 
+              escape = FALSE,
+              options = list(
+                dom = 't',
+                paging = FALSE,
+                searching = FALSE, 
+                columnDefs = list(list(
+                  targets = 0,            
+                  visible = FALSE         
+                ))
+              ))
+  })
+  
+#----------------------------------EJ TAB---------------------------------------
+  
 # Load the data reactively
 ces4_longer <- reactive({
   read_csv(here("data","ces4_longer.csv"))
@@ -792,99 +841,6 @@ output$meta_data <- renderTable({
    meta_data()
 
 
-})
-
-############################
-
-###### PCA - RB ############
-
-############################
-
-# Load the data reactively
-joined_drought_data <- reactive({
-  read_csv(here("data", "joined_drought_data.csv"))
-})
-
-# Dynamically update the checkbox choices from the numeric columns of the data
-observe({
-  data <- joined_drought_data() %>% 
-    select(-date)
-  
-  # Get only numeric columns
-  numeric_columns <- colnames(data)[sapply(data, is.numeric)]
-  
-  # Select variables to start
-  selected_columns <- c("Drought Index", "Total Acres Burned", "Total Precipitation (mm)", "Average Temperature C")
-  
-  # Update the checkbox choices to include only numeric columns
-  updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = selected_columns)
-})
-
-# Filter the data based on selected variables for PCA
-pca_data <- reactive({
-  req(input$pca_variables)  # Ensure some variables are selected
-  
-  # Filter the data by selected variables
-  data <- joined_drought_data()
-  data_selected <- data[, input$pca_variables, drop = FALSE]
-  
-  # Remove any columns that have zero variance
-  data_selected <- data_selected[, apply(data_selected, 2, var) != 0]
-  
-})
-
-# Perform PCA on the selected variables
-pca_result <- reactive({
-  req(pca_data())  # Ensure the filtered data is ready
-  prcomp(pca_data(), scale = TRUE)
-})
-
-# Define custom colors in a vector
-color_values <- c("#FFFF00", "#FBD47F", "#FFAA01", "#E60001", "#710001")
-color_palette <- setNames(color_values, c("D0", "D1", "D2", "D3", "D4"))
-
-# Plot the PCA biplot
-output$biplot <- renderPlot({
-  req(pca_result())
-  pca <- pca_result()
-  
-  autoplot(pca, 
-           data = joined_drought_data(), 
-           loadings = TRUE, 
-           color = "USDM_index",
-           loadings.label = TRUE,
-           loadings.colour = "black",
-           loadings.label.colour = "black",
-           loadings.label.size = 5,
-           size = 3) +
-    scale_color_manual(values = color_palette) +
-    theme_minimal() +
-    labs(title = "PCA Biplot of Selected Drought and Climate Factors", color = "Drought Index") +
-    theme(
-      axis.text.x = element_text(size = 14),  # Larger x-axis labels
-      axis.text.y = element_text(size = 14),  # Larger y-axis labels
-      axis.title.x = element_text(size = 16),  # Larger x-axis title
-      axis.title.y = element_text(size = 16),  # Larger y-axis title
-      plot.title = element_text(size = 18, hjust = 0.5),# Larger title
-      legend.position = "top",
-      legend.title = element_text(size = 14),
-      legend.text = element_text(size = 14)
-    )
-    
-})
-
-output$data_source <- renderDT({
-  datatable(data_source, 
-            escape = FALSE,
-            options = list(
-              dom = 't',
-              paging = FALSE,
-              searching = FALSE, 
-              columnDefs = list(list(
-                targets = 0,            
-                visible = FALSE         
-              ))
-            ))
 })
 
 }
