@@ -164,16 +164,17 @@ ui <- fluidPage(
     }
     
      /* Full height layout */
-      .full-height-row {
-        display: flex;
-        height: 100vh;  /* Ensure the row takes full viewport height */
-        margin: 0;
-      }
-      .full-height-column {
-        flex: 1;  /* Ensure both columns take up equal space */
-        padding: 0;
-        height: 100%;  /* Ensure the column takes the full height */
-      }
+    .full-height-row {
+      height: 100vh;  /* Full viewport height */
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    .full-height-column {
+      height: 100%;  /* Ensure this column takes the full height */
+      overflow: auto;  /* Enable scrolling if content overflows */
+    }
+
       #map {
         height: 100% !important; /* Ensure map takes full height of the column */
         width: 100% !important;  /* Ensure map takes full width of the column */
@@ -342,30 +343,30 @@ ui <- fluidPage(
 #-------------------------------DROUGHT MAP TAB---------------------------------
 
       tabPanel("Drought Map", 
-               h3("Map of Drought Conditions from 2000 to 2024"),
-               fluidRow(class = "full-height-row",
-                 column(5,
-                        p(class = "custom-html-text", style = "margin-left: 0px;", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
+          fluidRow(class = "full-height-row",
+                  column(5,
+                         h3(style = "margin-left: 0px;", "Map of Drought Conditions from 2000 to 2024"),
+                         p(class = "custom-html-text", style = "margin-left: 0px;", HTML("The U.S. Drought Monitor (USDM) has mapped drought conditions across the United States since 2000, providing real-time snapshots of drought severity.
                            Spatial drought monitoring is useful for decision-making in areas like water management, agriculture, and emergency response.
                            The USDM integrates multiple indicators, including precipitation, streamflow, reservoir levels, temperature, evaporative demand, soil moisture, and vegetation health.
                            The data in this map represents annual drought conditions during the peak drought season in late August. 
                            <br><br><b><span style='color: #E95420;'>Use the time slider below or click the play button to explore how drought conditions have evolved over time.</span></b>")),
-                        sliderInput("year", "Select Year:",
-                                    min = min(shp_data$year), 
-                                    max = max(shp_data$year), 
-                                    value = min(shp_data$year), 
-                                    step = 1,
-                                    sep = "",
-                                    width = "100%",
-                                    animate = animationOptions(interval = 1500, loop = TRUE)),
-                        h4(style = "margin-left: 0px;","Drought Index Categories"),
-                        DTOutput("drought_table")
-                 ),
-                 column(6, class = "full-height-column",
-                        leafletOutput("map", height = "100%", width = "100%")
-                 )
-               )
-      ),
+                         sliderInput("year", "Select Year:",
+                                     min = min(shp_data$year), 
+                                     max = max(shp_data$year), 
+                                     value = min(shp_data$year), 
+                                     step = 1,
+                                     sep = "",
+                                     width = "100%",
+                                     animate = animationOptions(interval = 1500, loop = TRUE)),
+                         h4(style = "margin-left: 0px;","Drought Index Categories"),
+                         DTOutput("drought_table")
+                  ),
+                  column(7, 
+                         leafletOutput("map", height = "100%", width = "100%")
+                  )
+              )
+          ),
       
 #-----------------------------------PCA TAB-------------------------------------
 
@@ -700,6 +701,14 @@ server <- function(input, output, session) {
     updateCheckboxGroupInput(session, "pca_variables", choices = numeric_columns, selected = selected_columns)
   })
   
+  # Reset checkboxes to default selected ones when switching tabs
+  observeEvent(input$tabs, {
+    if (input$tabs == "Principal Component Analysis") {
+      updateCheckboxGroupInput(session, "pca_variables", 
+                               selected = c("Drought Index", "Total Acres Burned", "Total Precipitation (mm)", "Average Temperature C"))
+    }
+  })
+  
   # Filter the data based on selected variables for PCA
   pca_data <- reactive({
     req(input$pca_variables)  # Ensure some variables are selected
@@ -753,19 +762,6 @@ server <- function(input, output, session) {
     
   })
   
-  output$data_source <- renderDT({
-    datatable(data_source, 
-              escape = FALSE,
-              options = list(
-                dom = 't',
-                paging = FALSE,
-                searching = FALSE, 
-                columnDefs = list(list(
-                  targets = 0,            
-                  visible = FALSE         
-                ))
-              ))
-  })
   
 #----------------------------------EJ TAB---------------------------------------
   
@@ -897,6 +893,21 @@ output$meta_data <- renderDT({
             escape = FALSE) 
 })
 
+#----------------------------------REFERENCES TAB---------------------------------
+  
+output$data_source <- renderDT({
+  datatable(data_source, 
+            escape = FALSE,
+            options = list(
+              dom = 't',
+              paging = FALSE,
+              searching = FALSE, 
+              columnDefs = list(list(
+                targets = 0,            
+                visible = FALSE         
+              ))
+            ))
+})
 
 }
 
