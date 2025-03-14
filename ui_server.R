@@ -242,7 +242,7 @@ ui <- fluidPage(
                tags$img(src = "lake_oroville_drought.jpg", 
                         class = "rounding-picture",
                         alt = "Image of Lake Oroville Dam with the Treeline High Above the Water Level Illustrating Losses from Evaporation and Use", 
-                        style = "width: 100%; height: 300px;"),
+                        style = "width: 100%; height: 275px;"),
                tags$figcaption(tags$i("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger.")),
                
                # First row: text panel on the left, image on the right
@@ -260,7 +260,6 @@ ui <- fluidPage(
                         which makes landscapes more susceptible to catastrophic fires. Recent extreme droughts, 
                         such as the five-year period from 2012 to 2016, underscore the urgent need for effective 
                         drought management and climate adaptation strategies."),
-                        br(),
                         p("Effective drought management at the statewide level requires comprehensive monitoring to 
                           guide timely and appropriate intervention strategies. State and federal agencies, including 
                           the California Department of Water Resources, USDA, NOAA, and the National Integrated Drought 
@@ -272,7 +271,7 @@ ui <- fluidPage(
                         tags$img(src = "almond_drought.jpeg", 
                                  alt = "An abandoned almond orchard in Newman, California impacted by drought", 
                                  class = "regular-hover",
-                                 style = "width: 100%; height: 450px;"),
+                                 style = "width: 100%; height: 400px;"),
                         tags$figcaption(tags$i("Abandoned drought-stricken almond orchard in Newman, California. Photo by Terry Chea, AP."))
                )
                ),
@@ -283,13 +282,25 @@ ui <- fluidPage(
                         tags$img(src = "IMG_1982.jpeg", 
                                  alt = "Photo of Fire on Hillside During a Prescribed Burn", 
                                  class = "regular-hover",
-                                 style = "width: 100%; height: 525px;"),
+                                 style = "width: 100%; height: 530px;"),
                         tags$figcaption(tags$i("Prescribed Fire for Managing Fuels and Wildfire Risk at Sedgwick Reserve in Santa Ynez, California.
                                         Photo by Thuy-Tien Bui.")),
                  ),
                  column(6,
                         h3("Climate and Drought"),
-                        p("Drought dynamics are often informed by the following environmental variables: RILEY INSERT CONTENT HERE")
+                        p("Drought dynamics are both influenced by and impact the following environmental variables:"),
+                        p(HTML("<b>Precipitation:</b> Drought is defined as a water shortage resulting from extended periods with little to no precipitation<sup>1</sup>. 
+  Changing variability of hydro-climatic events exacerbate regional seasonality of both drought and flooding.")),
+                        p(HTML("<b>Temperature:</b> Persistently high temperatures can lead to increased drought severity and is a main indicator of wildfire risk. 
+  Surface temperature is directly related to air vapor pressure deficit and can increase rates of evapotranspiration from soil and plants.<sup>1</sup>")),
+                        p(HTML("<b>Vapor Pressure Deficit (VPD):</b> Air vapor pressure deficit is the difference between the amount of moisture in the air 
+  and the amount of maximum moisture the air could hold at saturation. VPD is commonly referred to as the “drying power” of air and can 
+  greatly increase risk of wildfire spread when paired with high winds.<sup>4</sup>")),
+                        p(HTML("<b>Elevation:</b> Elevation influences temperature and precipitation patterns, with higher elevations generally receiving more precipitation 
+  and cooler temperatures. In drought conditions, higher elevations may experience delayed drying, while lower elevations may see more rapid 
+  moisture loss, impacting vegetation and water availability.<sup>5</sup>")),
+                        p(HTML("<b>Fire Area Burned:</b> Reduced precipitation and higher temperatures increase vegetation dryness, making it more susceptible to ignition. 
+  Drought conditions can extend the fire season and lead to larger, more intense wildfires.<sup>2</sup>"))
                  )
                ),
                
@@ -449,18 +460,29 @@ ui <- fluidPage(
                  p("The data used in this Shiny app was sourced from the following datasets:"),
                         DTOutput("data_source")),
                br(),
-               br(),
+               h3("References"),
                fluidRow(
-                 h3("Acknowledgements and Attributions"),
-                 p("This website was created as a part of ESM 244 - Advanced Data Analysis at the Bren
-                   School at UCSB taught by Nathan Grimes"),
-                 p("Thuy-Tien Bui, Riley Black, and Sam Lance created the site collaboratively, each creating
-                   their own tab. Thuy-Tien created the Drought Map and created + executed the theming of the site, 
-                   Riley Black created the PCA and EJ tabs, and Sam Lance created the Climate Trends and Background tabs.")
+                 p(HTML("1. Diffenbaugh, N. S., Swain, D. L., & Touma, D. (2015). Anthropogenic warming has increased drought risk in 
+        California. Proceedings of the National Academy of Sciences, 112(13), 3931–3936. 
+        <a href='https://doi.org/10.1073/pnas.1422385112' target='_blank'>https://doi.org/10.1073/pnas.1422385112</a>")),
+                 p(HTML("2. Williams, A. P., Abatzoglou, J. T., Gershunov, A., Guzman-Morales, J., Bishop, D. A., Balch, J. K., & Lettenmaier, D. P. (2019). Observed impacts of anthropogenic climate change on wildfire in California. Earth's Future, 7, 892–910. 
+        <a href='https://doi.org/10.1029/2019EF001210' target='_blank'>https://doi.org/10.1029/2019EF001210</a>")),
+                 p(HTML("3. National Integrated Drought Information System (NIDIS), California-Nevada Climate Applications Program (CNAP), & Western Regional Climate Center (WRCC). (2017). California-Nevada drought early warning system strategic plan. 
+        <a href='https://www.drought.gov/sites/default/files/2020-07/rpt-California-Nevada-DEWS-Strategic-Plan-2017-2018.pdf' target='_blank'>https://www.drought.gov/sites/default/files/2020-07/rpt-California-Nevada-DEWS-Strategic-Plan-2017-2018.pdf</a>")),
+                 p(HTML("4. Chiodi, A. M., Potter, B. E., & Larkin, N. K. (2021). Multi-decadal change in western US nighttime vapor pressure deficit. Geophysical Research Letters, 48, e2021GL092830. 
+        <a href='https://doi.org/10.1029/2021GL092830' target='_blank'>https://doi.org/10.1029/2021GL092830</a>")),
+                 p(HTML("5. Ullrich, P. A., Xu, Z., Rhoades, A. M., Dettinger, M. D., Mount, J. F., Jones, A. D., & Vahmani, P. (2018). California's drought of the future: A midcentury recreation of the exceptional conditions of 2012–2017. Earth's Future, 6(11), 1568–1587. 
+        <a href='https://doi.org/10.1029/2018EF001007' target='_blank'>https://doi.org/10.1029/2018EF001007</a>"))),
+               br(),
+               
+               fluidRow(
+                 h3("Attributions"),
+                 p("This website was created as a part of ESM 244 Advanced Data Analysis at the UCSB Bren
+                   School of Environmental Science and Management taught by Nathan Grimes.")
+                 )
                )
       )
     )
-  )
 
 #-------------------------------SHINY SERVER---------------------------------
 
