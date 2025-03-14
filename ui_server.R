@@ -460,19 +460,22 @@ ui <- fluidPage(
                  p("The data used in this Shiny app was sourced from the following datasets:"),
                         DTOutput("data_source")),
                br(),
-               h3("References"),
                fluidRow(
-                 p(HTML("1. Diffenbaugh, N. S., Swain, D. L., & Touma, D. (2015). Anthropogenic warming has increased drought risk in 
-        California. Proceedings of the National Academy of Sciences, 112(13), 3931–3936. 
-        <a href='https://doi.org/10.1073/pnas.1422385112' target='_blank'>https://doi.org/10.1073/pnas.1422385112</a>")),
-                 p(HTML("2. Williams, A. P., Abatzoglou, J. T., Gershunov, A., Guzman-Morales, J., Bishop, D. A., Balch, J. K., & Lettenmaier, D. P. (2019). Observed impacts of anthropogenic climate change on wildfire in California. Earth's Future, 7, 892–910. 
-        <a href='https://doi.org/10.1029/2019EF001210' target='_blank'>https://doi.org/10.1029/2019EF001210</a>")),
-                 p(HTML("3. National Integrated Drought Information System (NIDIS), California-Nevada Climate Applications Program (CNAP), & Western Regional Climate Center (WRCC). (2017). California-Nevada drought early warning system strategic plan. 
-        <a href='https://www.drought.gov/sites/default/files/2020-07/rpt-California-Nevada-DEWS-Strategic-Plan-2017-2018.pdf' target='_blank'>https://www.drought.gov/sites/default/files/2020-07/rpt-California-Nevada-DEWS-Strategic-Plan-2017-2018.pdf</a>")),
-                 p(HTML("4. Chiodi, A. M., Potter, B. E., & Larkin, N. K. (2021). Multi-decadal change in western US nighttime vapor pressure deficit. Geophysical Research Letters, 48, e2021GL092830. 
-        <a href='https://doi.org/10.1029/2021GL092830' target='_blank'>https://doi.org/10.1029/2021GL092830</a>")),
-                 p(HTML("5. Ullrich, P. A., Xu, Z., Rhoades, A. M., Dettinger, M. D., Mount, J. F., Jones, A. D., & Vahmani, P. (2018). California's drought of the future: A midcentury recreation of the exceptional conditions of 2012–2017. Earth's Future, 6(11), 1568–1587. 
-        <a href='https://doi.org/10.1029/2018EF001007' target='_blank'>https://doi.org/10.1029/2018EF001007</a>"))),
+                 p(HTML("<h3 style='margin-bottom: 0px;'>References</h3>")),
+                 p(HTML("<ol style='font-size: 14px; list-style-type: decimal; margin-left: 20px; margin-right: 40px; padding-left: 20px; padding-right: 40px;'>
+           <li style='margin-bottom: 10px;'>Diffenbaugh, N. S., Swain, D. L., & Touma, D. (2015). Anthropogenic warming has increased drought risk in 
+               California. Proceedings of the National Academy of Sciences, 112(13), 3931–3936. 
+               <a href='https://doi.org/10.1073/pnas.1422385112' target='_blank'>https://doi.org/10.1073/pnas.1422385112</a></li>
+           <li style='margin-bottom: 10px;'>Williams, A. P., Abatzoglou, J. T., Gershunov, A., Guzman-Morales, J., Bishop, D. A., Balch, J. K., & Lettenmaier, D. P. (2019). Observed impacts of anthropogenic climate change on wildfire in California. Earth's Future, 7, 892–910. 
+               <a href='https://doi.org/10.1029/2019EF001210' target='_blank'>https://doi.org/10.1029/2019EF001210</a></li>
+           <li style='margin-bottom: 10px;'>National Integrated Drought Information System (NIDIS), California-Nevada Climate Applications Program (CNAP), & Western Regional Climate Center (WRCC). (2017). California-Nevada drought early warning system strategic plan. 
+               <a href='https://www.drought.gov/sites/default/files/2020-07/rpt-California-Nevada-DEWS-Strategic-Plan-2017-2018.pdf' target='_blank'>https://www.drought.gov/sites/default/files/2020-07/rpt-California-Nevada-DEWS-Strategic-Plan-2017-2018.pdf</a></li>
+           <li style='margin-bottom: 10px;'>Chiodi, A. M., Potter, B. E., & Larkin, N. K. (2021). Multi-decadal change in western US nighttime vapor pressure deficit. Geophysical Research Letters, 48, e2021GL092830. 
+               <a href='https://doi.org/10.1029/2021GL092830' target='_blank'>https://doi.org/10.1029/2021GL092830</a></li>
+           <li style='margin-bottom: 10px;'>Ullrich, P. A., Xu, Z., Rhoades, A. M., Dettinger, M. D., Mount, J. F., Jones, A. D., & Vahmani, P. (2018). California's drought of the future: A midcentury recreation of the exceptional conditions of 2012–2017. Earth's Future, 6(11), 1568–1587. 
+               <a href='https://doi.org/10.1029/2018EF001007' target='_blank'>https://doi.org/10.1029/2018EF001007</a></li>
+         </ol>"))
+               ),
                br(),
                
                fluidRow(
