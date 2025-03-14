@@ -309,24 +309,37 @@ ui <- fluidPage(
                fluidRow(
                  column(6,
                         h3("Navigating the App"),
-                        p("This Shiny App offers an interactive platform to visualize spatial variations in drought severity, analyze patterns in drought parameters, 
-                        and explore the distribution of drought-related environmental justice impacts across different counties.
+                        p("This Shiny App offers an interactive platform to visualize 
+                        spatial variations in drought severity, analyze patterns in drought parameters, 
+                        and explore the distribution of drought-related environmental justice 
+                        impacts across different counties.
 
                           Tabs provide the following:"),
+                        
                         HTML('<div style="margin-left: 10px"><strong>Background</strong></div>'),  # HTML to make text bold
-                        p("Introduction to the project, explantion of the importance of understanding drought and its
-                          predictors in California, guide for navigating the website."),
+                        p("Introduction to the project, explantion of drought and its predictors in 
+                          California, and a guide for navigating the site."),
+                        
+                        
                         HTML('<div style="margin-left: 10px"><strong>Drought Map</strong></div>'),  # HTML to make text bold
-                        p("Interactive map of changes in drought severity throughout California 
-                          between 2000 and 2024."),
+                        p("Interactive map of changes in drought severity in California 
+                          between 2000 and 2025."),
+                        
+                        
                         HTML('<div style="margin-left: 10px"><strong>Principal Component Analysis</strong></div>'),  # HTML to make text bold
-                        p("Biplot produced by a Principal Component Analysis (a statistical analysis to understand how specific 
-                          variables are correlated with one another) to understand the relationships between 
-                          different climate variables and drought for California counties."),
+                        p("Biplot produced by a Principal Component Analysis to understand 
+                        the relationships between climate, fire, and drought in California."),
+                        
+                        
                         HTML('<div style="margin-left: 10px"><strong>Climate Trends</strong></div>'),  # HTML to make text bold
-                        p("Line graphs of different climate variables over time for California counties."),
+                        p("Line graphs of different climate parameters from 2000-2025 
+                          for counties in California."),
+                        
+                        
                         HTML('<div style="margin-left: 10px"><strong>Environmental Justice</strong></div>'),  # HTML to make text bold
-                        p("Boxplots of environmental justice metrics for El Dorado and Los Angeles counties.")
+                        p("Boxplots of comparing environmental justice metrics from El Dorado and 
+                        Los Angeles counties with statistical analysis to understand the significance
+                          of comparisons.")
                  ),
                  column(6,
                         br(),
@@ -390,7 +403,7 @@ ui <- fluidPage(
                         )
                  ),
                  column(7,
-                        plotOutput("biplot", height = "100vh", width = "95%")
+                        plotOutput("biplot", height = "90vh", width = "95%")
                  )
                )
       ),
@@ -401,11 +414,16 @@ ui <- fluidPage(
                h3("Understanding Climate Trends for California Counties"),
                fluidRow(
                  column(5,
-                        p(HTML("Climate factors such as precipitation, temperature, and vapor pressure deficit play a major role in 
-                             determining drought conditions. Increased temperature and decreased precipitation can lead to more severe and prolonged droughts.
-                             Due to climate change, these factors have and will continue to experience significant changes over time, impacting drought risk.
+                        p(HTML("The PRISM Climate Group at Oregon State University provides high-quality 
+                        spatial climate data for the United States, including temperature, precipitation, 
+                        and vapor pressure deficit. This tab visualizes the year to year trends in these climate variables
+                        for all counties in California between the years 2000 and 2025. The 'Severe Drought' 
+                        marker on the plot indicates the five-year period from 2012 to 2016, 
+                        which was one of the most severe droughts in California's history.
                              
-                             <br><br><b><span style='color: #E95420;'> To see how these factors have changed for individual counties in California, select a county and climate factor of interest. </span></b>")),
+                             <br><br><b><span style='color: #E95420;'> 
+                               To visualize the climate patterns before, during, and after 
+                               severe drought years, select a county in California and a climate variable </span></b>")),
                         wellPanel(selectInput("county_cl",
                                               label = "Select County",
                                               choices = NULL),
@@ -659,7 +677,7 @@ server <- function(input, output, session) {
       geom_rect(aes(xmin = 2012, xmax = 2016, ymin = -Inf, ymax = Inf), 
                 fill = "#FBDDD2", color = NA, alpha = 0.1) +  # Transparent rectangle
       geom_text(aes(x = 2014, y = max(value) * 1.1, 
-                    label = str_wrap("Extreme Drought", width = 7), vjust = 1), 
+                    label = str_wrap("Severe Drought", width = 7), vjust = 1), 
                 color = "#E95420", size = 5.5, fontface = "bold") +  # Text label
       geom_line(aes(color = "#E95420"), size = 1.2) +  # Slightly thicker line for better visibility
       geom_point(aes(color = "#E95420"), size = 3) +  # Larger points for better visibility)
@@ -672,7 +690,7 @@ server <- function(input, output, session) {
         axis.text.y = element_text(size = 14),  # Larger y-axis labels
         axis.title.x = element_text(size = 16),  # Larger x-axis title
         axis.title.y = element_text(size = 16),  # Larger y-axis title
-        plot.title = element_text(size = 18, hjust = 0.5),  # Larger title
+        plot.title = element_text(size = 18, hjust = 0.5, margin = margin(b = 20)),  # Larger title
         legend.title = element_text(size = 14),  # Larger legend title
         legend.position = "none",
         legend.text = element_text(size = 12) # Larger legend text
