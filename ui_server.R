@@ -14,6 +14,7 @@ library(viridis)
 library(shinythemes)
 library(ggfortify)
 library(bslib)
+library(fontawesome)
 
 #-------------------------------LOAD DATA--------------------------------------
 
@@ -58,7 +59,6 @@ climate_data <- climate_data |>
 
 # PCA Data
 joined_drought_data <- read_csv(here("data","joined_drought_data.csv"))
-meta_data <- read_csv(here("data","meta_data.csv"))
 
 
 # Citations Data
@@ -244,7 +244,7 @@ ui <- fluidPage(
                         class = "rounding-picture",
                         alt = "Image of Lake Oroville Dam with the Treeline High Above the Water Level Illustrating Losses from Evaporation and Use", 
                         style = "width: 100%; height: 275px;"),
-               tags$figcaption(tags$i("Low Water Levels in the Oroville Dam in California. Photo by Noah Berger.")),
+               tags$figcaption(tags$i("Low water levels in Lake Oroville, California. Photo by Noah Berger.")),
                
                # First row: text panel on the left, image on the right
                fluidRow(
@@ -284,7 +284,7 @@ ui <- fluidPage(
                                  alt = "Photo of Fire on Hillside During a Prescribed Burn", 
                                  class = "regular-hover",
                                  style = "width: 100%; height: 530px;"),
-                        tags$figcaption(tags$i("Prescribed Fire for Managing Fuels and Wildfire Risk at Sedgwick Reserve in Santa Ynez, California.
+                        tags$figcaption(tags$i("Prescribed fire for managing fuels and wildfire risk at Sedgwick Reserve in Santa Ynez, California.
                                         Photo by Thuy-Tien Bui.")),
                  ),
                  column(6,
@@ -323,7 +323,7 @@ ui <- fluidPage(
                         
                         HTML('<div style="margin-left: 10px"><strong>Drought Map</strong></div>'),  # HTML to make text bold
                         p("Interactive map of changes in drought severity in California 
-                          between 2000 and 2025."),
+                          between 2000 and 2024."),
                         
                         
                         HTML('<div style="margin-left: 10px"><strong>Principal Component Analysis</strong></div>'),  # HTML to make text bold
@@ -476,10 +476,16 @@ ui <- fluidPage(
 #-------------------------------REFERENCES TAB---------------------------------
 
       tabPanel("Data & References",
-               h3("Data Sources"),
+               fluidRow(
+                 column(8, h3("Data Sources")),  # Left-aligned text
+                 column(4, div(style = "text-align: right; margin-right: 20px; margin-top: 20px;", 
+                               actionButton("github_button", "Click here for code", 
+                                            icon = icon("github"),
+                                            onclick = "window.open('https://github.com/slance99/ca_drought_monitor', '_blank')")))
+               ),
                fluidRow(
                  p("The data used in this Shiny app was sourced from the following datasets:"),
-                        DTOutput("data_source")),
+                 DTOutput("data_source")),
                br(),
                fluidRow(
                  p(HTML("<h3 style='margin-bottom: 0px;'>References</h3>")),
@@ -498,15 +504,11 @@ ui <- fluidPage(
          </ol>"))
                ),
                br(),
-               
-               fluidRow(
-                 h3("Attributions"),
-                 p("This website was created as a part of ESM 244 Advanced Data Analysis at the UCSB Bren
-                   School of Environmental Science and Management taught by Nathan Grimes.")
+                 p(em("This app was created for ESM 244 Advanced Data Analysis at the UCSB Bren
+                      School of Environmental Science and Management taught by Nathan Grimes."), style="margin-right: 0px; margin-left: 0px; margin-bottom: 0px; margin-top: 0px;text-align:justify;background-color:#FBDDD2;padding:10px;border-radius:0px")
                  )
                )
       )
-    )
 
 #-------------------------------SHINY SERVER---------------------------------
 
